@@ -10,5 +10,5 @@ type OrderRepo struct {
 }
 
 func NewOrderRepo() *OrderRepo {
-	return &OrderRepo{}
+	return &OrderRepo{db.NewBaseRepo[entity.Order]()}
 }

@@ -10,5 +10,5 @@ type CouponRepo struct {
 }
 
 func NewCouponRepo() *CouponRepo {
-	return &CouponRepo{}
+	return &CouponRepo{db.NewBaseRepo[entity.Coupon]()}
 }

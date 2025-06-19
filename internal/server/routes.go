@@ -2,10 +2,6 @@ package server
 
 import (
 	"net/http"
-	"time"
-
-	"ztf-backend/internal/db"
-	"ztf-backend/internal/entity"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -21,25 +17,19 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true, // Enable cookies/auth
 	}))
 
-	r.GET("/", s.HelloWorldHandler)
+	// coupon routes
+	r.GET("/api/v1/coupons", gin.HandlerFunc(s.couponHdl.GetAllCoupons))
+	r.GET("/api/v1/coupons/:id", gin.HandlerFunc(s.couponHdl.GetCouponById))
+	r.POST("/api/v1/coupons", gin.HandlerFunc(s.couponHdl.CreateCoupon))
+	r.PUT("/api/v1/coupons/:id", gin.HandlerFunc(s.couponHdl.UpdateCoupon))
+	r.DELETE("/api/v1/coupons/:id", gin.HandlerFunc(s.couponHdl.DeleteCoupen))
+
+	// order routes
+	r.GET("/api/v1/orders", gin.HandlerFunc(s.orderHdl.GetAllOrders))
+	r.GET("/api/v1/orders/:id", gin.HandlerFunc(s.orderHdl.GetOrderById))
+	r.POST("/api/v1/orders", gin.HandlerFunc(s.orderHdl.CreateOrder))
+	r.PUT("/api/v1/orders/:id", gin.HandlerFunc(s.orderHdl.UpdateOrder))
+	r.DELETE("/api/v1/orders/:id", gin.HandlerFunc(s.orderHdl.DeleteOrder))
 
 	return r
-}
-
-func (s *Server) HelloWorldHandler(c *gin.Context) {
-	resp := make(map[string]string)
-	resp["message"] = "Hello World"
-
-	tidb := db.GetDB()
-	coupon := entity.Coupon{
-		Code:           "TESTCOUPON",
-		Name:           "Test Coupon",
-		Description:    "This is a test coupon",
-		CouponType:     entity.CouponTypePercentage,
-		UsageMethod:    entity.UsageMethodSingleUse,
-		ExpirationDate: time.Now().AddDate(0, 1, 0),
-	}
-	tidb.Save(&coupon)
-
-	c.JSON(http.StatusOK, coupon)
 }
