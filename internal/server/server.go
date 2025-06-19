@@ -2,11 +2,13 @@ package server
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
 
+	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 )
 
@@ -15,7 +17,15 @@ type Server struct {
 }
 
 func NewServer() *http.Server {
+	// Load environment variables
+	appEnv := "dev"
+	err := godotenv.Load(".env." + appEnv)
+	if err != nil {
+		fmt.Printf("Error loading .env.%s file: %v\n", appEnv, err)
+	}
+
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	log.Printf("Starting server on port %d", port)
 	NewServer := &Server{
 		port: port,
 	}
