@@ -1,13 +1,13 @@
-package business
+package biz
 
 import "ztf-backend/internal/entity"
 
 type IOrderRepo interface {
-	findAll() ([]entity.Order, error)
-	findById(id string) (*entity.Order, error)
-	insertOne(order *entity.Order) (string, error)
-	updateOne(order *entity.Order) (string, error)
-	deleteOne(id string) (string, error)
+	FindAll() ([]entity.Order, error)
+	FindById(id string) (*entity.Order, error)
+	InsertOne(order *entity.Order) (uint, error)
+	UpdateOne(order *entity.Order) (uint, error)
+	DeleteOne(id uint) (uint, error)
 }
 
 type OrderBusiness struct {

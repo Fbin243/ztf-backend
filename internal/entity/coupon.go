@@ -19,9 +19,7 @@ const (
 )
 
 type Coupon struct {
-	ID             uint        `gorm:"primaryKey" json:"id"`
-	CreateAt       time.Time   `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt      time.Time   `gorm:"autoUpdateTime" json:"updated_at"`
+	*BaseEntity
 	Code           string      `gorm:"not null" json:"code"`
 	Name           string      `gorm:"not null" json:"name"`
 	Description    string      `json:"description"`

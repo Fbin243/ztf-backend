@@ -1,15 +1,15 @@
-package business
+package biz
 
 import "ztf-backend/internal/entity"
 
-func (b *OrderBusiness) InsertOne(order *entity.Order) (string, error) {
-	return b.orderRepo.insertOne(order)
+func (b *OrderBusiness) InsertOne(order *entity.Order) (uint, error) {
+	return b.orderRepo.InsertOne(order)
 }
 
-func (b *OrderBusiness) UpdateOne(order *entity.Order) (string, error) {
-	return b.orderRepo.updateOne(order)
+func (b *OrderBusiness) UpdateOne(order *entity.Order) (uint, error) {
+	return b.orderRepo.UpdateOne(order)
 }
 
-func (b *OrderBusiness) DeleteOne(id string) (string, error) {
-	return b.orderRepo.deleteOne(id)
+func (b *OrderBusiness) DeleteOne(id uint) (uint, error) {
+	return b.orderRepo.DeleteOne(id)
 }

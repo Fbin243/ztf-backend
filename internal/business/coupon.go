@@ -1,13 +1,13 @@
-package business
+package biz
 
 import "ztf-backend/internal/entity"
 
 type ICouponRepo interface {
-	findAll() ([]entity.Coupon, error)
-	findById(id string) (*entity.Coupon, error)
-	insertOne(coupon *entity.Coupon) (string, error)
-	updateOne(coupon *entity.Coupon) (string, error)
-	deleteOne(id string) (string, error)
+	FindAll() ([]entity.Coupon, error)
+	FindById(id string) (*entity.Coupon, error)
+	InsertOne(coupon *entity.Coupon) (uint, error)
+	UpdateOne(coupon *entity.Coupon) (uint, error)
+	DeleteOne(id uint) (uint, error)
 }
 
 type CouponBusiness struct {

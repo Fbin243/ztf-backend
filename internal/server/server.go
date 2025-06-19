@@ -8,12 +8,18 @@ import (
 	"strconv"
 	"time"
 
+	biz "ztf-backend/internal/business"
+	"ztf-backend/internal/repo"
+	"ztf-backend/internal/transport"
+
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {
-	port int
+	port          int
+	orderhandler  *transport.OrderHandler
+	couponhandler *transport.CouponHandler
 }
 
 func NewServer() *http.Server {
@@ -27,7 +33,9 @@ func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	log.Printf("Starting server on port %d", port)
 	NewServer := &Server{
-		port: port,
+		port:          port,
+		orderhandler:  transport.NewOrderHandler(biz.NewOrderBusiness(repo.NewOrderRepo())),
+		couponhandler: transport.NewCouponHandler(biz.NewCouponBusiness(repo.NewCouponRepo())),
 	}
 
 	// Declare Server config
