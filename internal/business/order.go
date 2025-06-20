@@ -3,6 +3,7 @@ package biz
 import "ztf-backend/internal/entity"
 
 type IOrderRepo interface {
+	Exists(id uint) (bool, error)
 	FindAll() ([]entity.Order, error)
 	FindById(id uint) (*entity.Order, error)
 	InsertOne(order *entity.Order) (uint, error)
@@ -11,11 +12,13 @@ type IOrderRepo interface {
 }
 
 type OrderBusiness struct {
-	orderRepo IOrderRepo
+	orderRepo  IOrderRepo
+	couponRepo ICouponRepo
 }
 
-func NewOrderBusiness(orderRepo IOrderRepo) *OrderBusiness {
+func NewOrderBusiness(orderRepo IOrderRepo, couponRepo ICouponRepo) *OrderBusiness {
 	return &OrderBusiness{
-		orderRepo: orderRepo,
+		orderRepo:  orderRepo,
+		couponRepo: couponRepo,
 	}
 }

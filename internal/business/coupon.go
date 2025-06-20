@@ -8,6 +8,8 @@ type ICouponRepo interface {
 	InsertOne(coupon *entity.Coupon) (uint, error)
 	UpdateOne(coupon *entity.Coupon) (uint, error)
 	DeleteOne(id uint) (uint, error)
+	Exists(id uint) (bool, error)
+	FindByCode(code string) (*entity.Coupon, error)
 }
 
 type CouponBusiness struct {

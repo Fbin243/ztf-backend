@@ -9,6 +9,17 @@ import (
 
 func (b *OrderBusiness) InsertOne(input *entity.CreateOrderInput) (uint, error) {
 	newOrder := &entity.Order{}
+
+	// Get the coupon if it exists
+	if input.CouponCode != nil {
+		coupon, err := b.couponRepo.FindByCode(*input.CouponCode)
+		if err != nil {
+			return 0, err
+		}
+
+		newOrder.CouponId = coupon.Id
+	}
+
 	err := copier.Copy(newOrder, input)
 	if err != nil {
 		return 0, err
@@ -18,12 +29,20 @@ func (b *OrderBusiness) InsertOne(input *entity.CreateOrderInput) (uint, error) 
 }
 
 func (b *OrderBusiness) UpdateOne(id uint, input *entity.UpdateOrderInput) (uint, error) {
+	// Get the existing order
 	existingOrder, err := b.orderRepo.FindById(id)
 	if err != nil {
 		return 0, err
 	}
-	if existingOrder == nil {
-		return 0, utils.ErrorNotFound
+
+	// Get the coupon if it exists
+	if input.CouponCode != nil {
+		coupon, err := b.couponRepo.FindByCode(*input.CouponCode)
+		if err != nil {
+			return 0, err
+		}
+
+		existingOrder.CouponId = coupon.Id
 	}
 
 	err = copier.Copy(existingOrder, input)
@@ -35,5 +54,14 @@ func (b *OrderBusiness) UpdateOne(id uint, input *entity.UpdateOrderInput) (uint
 }
 
 func (b *OrderBusiness) DeleteOne(id uint) (uint, error) {
+	// Check if the order exists
+	exists, err := b.orderRepo.Exists(id)
+	if err != nil {
+		return 0, err
+	}
+	if !exists {
+		return 0, utils.ErrorNotFound
+	}
+
 	return b.orderRepo.DeleteOne(id)
 }

@@ -57,6 +57,12 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 		return
 	}
 
+	err := GetValidator().Struct(order)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	id, err := hdl.orderBusiness.InsertOne(&order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order"})

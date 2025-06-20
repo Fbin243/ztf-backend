@@ -2,6 +2,7 @@ package biz
 
 import (
 	"ztf-backend/internal/entity"
+	"ztf-backend/internal/utils"
 
 	"github.com/jinzhu/copier"
 )
@@ -17,7 +18,7 @@ func (b *CouponBusiness) InsertOne(input *entity.CreateCouponInput) (uint, error
 }
 
 func (b *CouponBusiness) UpdateOne(id uint, input *entity.UpdateCouponInput) (uint, error) {
-	// Get existing coupon by id
+	// Check if the coupon exists
 	existingCoupon, err := b.couponRepo.FindById(id)
 	if err != nil {
 		return 0, err
@@ -33,9 +34,12 @@ func (b *CouponBusiness) UpdateOne(id uint, input *entity.UpdateCouponInput) (ui
 
 func (b *CouponBusiness) DeleteOne(id uint) (uint, error) {
 	// Check if the coupon exists
-	_, err := b.couponRepo.FindById(id)
+	exists, err := b.couponRepo.Exists(id)
 	if err != nil {
 		return 0, err
+	}
+	if !exists {
+		return 0, utils.ErrorNotFound
 	}
 
 	return b.couponRepo.DeleteOne(id)

@@ -17,7 +17,7 @@ import (
 )
 
 type Server struct {
-	port          int
+	port      int
 	orderHdl  *transport.OrderHandler
 	couponHdl *transport.CouponHandler
 }
@@ -32,16 +32,19 @@ func NewServer() *http.Server {
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	log.Printf("Starting server on port %d", port)
+	couponRepo := repo.NewCouponRepo()
+	orderRepo := repo.NewOrderRepo()
 	NewServer := &Server{
 		port: port,
 		orderHdl: transport.NewOrderHandler(
 			biz.NewOrderBusiness(
-				repo.NewOrderRepo(),
+				orderRepo,
+				couponRepo,
 			),
 		),
 		couponHdl: transport.NewCouponHandler(
 			biz.NewCouponBusiness(
-				repo.NewCouponRepo(),
+				couponRepo,
 			),
 		),
 	}

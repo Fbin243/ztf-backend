@@ -65,3 +65,14 @@ func (r *BaseRepo[E]) DeleteOne(id uint) (uint, error) {
 
 	return id, nil
 }
+
+func (r *BaseRepo[E]) Exists(id uint) (bool, error) {
+	var count int64
+	var entity E
+	err := r.DB.Model(&entity).Where("id = ?", id).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
