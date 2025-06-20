@@ -22,7 +22,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/api/v1/coupons/:id", s.couponHdl.GetCouponById)
 	r.POST("/api/v1/coupons", s.couponHdl.CreateCoupon)
 	r.PUT("/api/v1/coupons/:id", s.couponHdl.UpdateCoupon)
-	r.DELETE("/api/v1/coupons/:id", s.couponHdl.DeleteCoupen)
+	r.DELETE("/api/v1/coupons/:id", s.couponHdl.DeleteCoupon)
 
 	// order routes
 	r.GET("/api/v1/orders", s.orderHdl.GetAllOrders)

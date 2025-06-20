@@ -2,6 +2,7 @@ package db
 
 import (
 	"ztf-backend/internal/entity"
+	"ztf-backend/internal/utils"
 
 	"github.com/samber/lo"
 	"gorm.io/gorm"
@@ -25,9 +26,14 @@ func (r *BaseRepo[E]) FindAll() ([]E, error) {
 
 func (r *BaseRepo[E]) FindById(id uint) (*E, error) {
 	var entity E
-	if err := r.DB.First(&entity, "id = ?", id).Error; err != nil {
+	err := r.DB.First(&entity, "id = ?", id).Error
+	if err == gorm.ErrRecordNotFound {
+		return nil, utils.ErrorNotFound
+	}
+	if err != nil {
 		return nil, err
 	}
+
 	return &entity, nil
 }
 
@@ -49,11 +55,11 @@ func (r *BaseRepo[E]) UpdateOne(entity *E) (uint, error) {
 
 func (r *BaseRepo[E]) DeleteOne(id uint) (uint, error) {
 	var entity E
-	if err := r.DB.First(&entity, "id = ?", id).Error; err != nil {
-		return 0, err
+	err := r.DB.Delete(&entity, id).Error
+	if err == gorm.ErrRecordNotFound {
+		return 0, utils.ErrorNotFound
 	}
-
-	if err := r.DB.Delete(&entity).Error; err != nil {
+	if err != nil {
 		return 0, err
 	}
 
