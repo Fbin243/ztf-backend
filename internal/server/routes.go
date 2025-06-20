@@ -18,18 +18,18 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// coupon routes
-	r.GET("/api/v1/coupons", gin.HandlerFunc(s.couponHdl.GetAllCoupons))
-	r.GET("/api/v1/coupons/:id", gin.HandlerFunc(s.couponHdl.GetCouponById))
-	r.POST("/api/v1/coupons", gin.HandlerFunc(s.couponHdl.CreateCoupon))
-	r.PUT("/api/v1/coupons/:id", gin.HandlerFunc(s.couponHdl.UpdateCoupon))
-	r.DELETE("/api/v1/coupons/:id", gin.HandlerFunc(s.couponHdl.DeleteCoupen))
+	r.GET("/api/v1/coupons", s.couponHdl.GetAllCoupons)
+	r.GET("/api/v1/coupons/:id", s.couponHdl.GetCouponById)
+	r.POST("/api/v1/coupons", s.couponHdl.CreateCoupon)
+	r.PUT("/api/v1/coupons/:id", s.couponHdl.UpdateCoupon)
+	r.DELETE("/api/v1/coupons/:id", s.couponHdl.DeleteCoupen)
 
 	// order routes
-	r.GET("/api/v1/orders", gin.HandlerFunc(s.orderHdl.GetAllOrders))
-	r.GET("/api/v1/orders/:id", gin.HandlerFunc(s.orderHdl.GetOrderById))
-	r.POST("/api/v1/orders", gin.HandlerFunc(s.orderHdl.CreateOrder))
-	r.PUT("/api/v1/orders/:id", gin.HandlerFunc(s.orderHdl.UpdateOrder))
-	r.DELETE("/api/v1/orders/:id", gin.HandlerFunc(s.orderHdl.DeleteOrder))
+	r.GET("/api/v1/orders", s.orderHdl.GetAllOrders)
+	r.GET("/api/v1/orders/:id", s.orderHdl.GetOrderById)
+	r.POST("/api/v1/orders", s.orderHdl.CreateOrder)
+	r.PUT("/api/v1/orders/:id", s.orderHdl.UpdateOrder)
+	r.DELETE("/api/v1/orders/:id", s.orderHdl.DeleteOrder)
 
 	return r
 }

@@ -1,11 +1,9 @@
 package transport
 
 import (
-	"fmt"
-	"strconv"
-
 	biz "ztf-backend/internal/business"
 	"ztf-backend/internal/entity"
+	"ztf-backend/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,19 +28,33 @@ func (hdl *CouponHandler) GetAllCoupons(ctx *gin.Context) {
 }
 
 func (hdl *CouponHandler) GetCouponById(ctx *gin.Context) {
-	id := ctx.Param("id")
-	coupon, err := hdl.couponBusiness.FindById(id)
+	stringId := ctx.Param("id")
+	uintId, err := utils.ConvertStringToUInt(stringId)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	coupon, err := hdl.couponBusiness.FindById(uintId)
 	if err != nil {
 		ctx.JSON(404, gin.H{"error": "Coupon not found"})
 		return
 	}
+
 	ctx.JSON(200, coupon)
 }
 
 func (hdl *CouponHandler) CreateCoupon(ctx *gin.Context) {
-	var coupon entity.Coupon
+	var coupon entity.CreateCouponInput
 	if err := ctx.ShouldBindJSON(&coupon); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	// Validate the coupon data
+	err := GetValidator().Struct(coupon)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "Validation failed", "details": err.Error()})
 		return
 	}
 
@@ -55,13 +67,20 @@ func (hdl *CouponHandler) CreateCoupon(ctx *gin.Context) {
 }
 
 func (hdl *CouponHandler) UpdateCoupon(ctx *gin.Context) {
-	var coupon entity.Coupon
+	stringID := ctx.Param("id")
+	uintID, err := utils.ConvertStringToUInt(stringID)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	var coupon entity.UpdateCouponInput
 	if err := ctx.ShouldBindJSON(&coupon); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
 
-	id, err := hdl.couponBusiness.UpdateOne(&coupon)
+	id, err := hdl.couponBusiness.UpdateOne(uintID, &coupon)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "Failed to update coupon"})
 		return
@@ -70,18 +89,17 @@ func (hdl *CouponHandler) UpdateCoupon(ctx *gin.Context) {
 }
 
 func (hdl *CouponHandler) DeleteCoupen(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	val, err := strconv.ParseUint(id, 10, 0)
+	stringId := ctx.Param("id")
+	uintId, err := utils.ConvertStringToUInt(stringId)
 	if err != nil {
-		fmt.Println("Error:", err)
+		ctx.JSON(400, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	deletedId, err := hdl.couponBusiness.DeleteOne(uint(val))
+	id, err := hdl.couponBusiness.DeleteOne(uintId)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "Failed to delete order"})
 		return
 	}
-	ctx.JSON(200, gin.H{"deleted_id": deletedId})
+	ctx.JSON(200, gin.H{"deleted_id": id})
 }

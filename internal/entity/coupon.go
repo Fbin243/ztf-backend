@@ -22,6 +22,7 @@ type Coupon struct {
 	*BaseEntity
 	Code           string      `gorm:"not null" json:"code"`
 	Name           string      `gorm:"not null" json:"name"`
+	Value          float64     `gorm:"not null" json:"value"`
 	Description    string      `json:"description"`
 	CouponType     CouponType  `gorm:"not null" json:"coupon_type"`
 	UsageMethod    UsageMethod `gorm:"not null" json:"usage_method"`

@@ -12,7 +12,7 @@ type BaseRepo[E entity.IBaseEntity] struct {
 }
 
 func NewBaseRepo[E entity.IBaseEntity]() *BaseRepo[E] {
-	return &BaseRepo[E]{}
+	return &BaseRepo[E]{GetDB()}
 }
 
 func (r *BaseRepo[E]) FindAll() ([]E, error) {
@@ -23,7 +23,7 @@ func (r *BaseRepo[E]) FindAll() ([]E, error) {
 	return entities, nil
 }
 
-func (r *BaseRepo[E]) FindById(id string) (*E, error) {
+func (r *BaseRepo[E]) FindById(id uint) (*E, error) {
 	var entity E
 	if err := r.DB.First(&entity, "id = ?", id).Error; err != nil {
 		return nil, err

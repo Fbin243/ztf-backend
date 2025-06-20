@@ -1,11 +1,9 @@
 package transport
 
 import (
-	"fmt"
-	"strconv"
-
 	biz "ztf-backend/internal/business"
 	"ztf-backend/internal/entity"
+	"ztf-backend/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,8 +28,14 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
-	id := ctx.Param("id")
-	order, err := hdl.orderBusiness.FindById(id)
+	stringId := ctx.Param("id")
+	uintId, err := utils.ConvertStringToUInt(stringId)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	order, err := hdl.orderBusiness.FindById(uintId)
 	if err != nil {
 		ctx.JSON(404, gin.H{"error": "Order not found"})
 		return
@@ -40,7 +44,7 @@ func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
-	var order entity.Order
+	var order entity.CreateOrderInput
 	if err := ctx.ShouldBindJSON(&order); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
@@ -55,13 +59,20 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
-	var order entity.Order
+	stringId := ctx.Param("id")
+	uintId, err := utils.ConvertStringToUInt(stringId)
+	if err != nil {
+		ctx.JSON(400, gin.H{"error": "Invalid ID format"})
+		return
+	}
+
+	var order entity.UpdateOrderInput
 	if err := ctx.ShouldBindJSON(&order); err != nil {
 		ctx.JSON(400, gin.H{"error": "Invalid input"})
 		return
 	}
 
-	id, err := hdl.orderBusiness.UpdateOne(&order)
+	id, err := hdl.orderBusiness.UpdateOne(uintId, &order)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "Failed to update order"})
 		return
@@ -70,18 +81,17 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
-	id := ctx.Param("id")
-
-	val, err := strconv.ParseUint(id, 10, 0)
+	stringId := ctx.Param("id")
+	uintId, err := utils.ConvertStringToUInt(stringId)
 	if err != nil {
-		fmt.Println("Error:", err)
+		ctx.JSON(400, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	deletedId, err := hdl.orderBusiness.DeleteOne(uint(val))
+	id, err := hdl.orderBusiness.DeleteOne(uintId)
 	if err != nil {
 		ctx.JSON(500, gin.H{"error": "Failed to delete order"})
 		return
 	}
-	ctx.JSON(200, gin.H{"deleted_id": deletedId})
+	ctx.JSON(200, gin.H{"deleted_id": id})
 }
