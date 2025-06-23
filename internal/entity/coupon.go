@@ -20,12 +20,12 @@ const (
 
 type Coupon struct {
 	*BaseEntity
-	Code           string      `gorm:"not null" json:"code"`
-	Name           string      `gorm:"not null" json:"name"`
-	Value          float64     `gorm:"not null" json:"value"`
+	Code           string      `json:"code"             gorm:"not null"`
+	Name           string      `json:"name"             gorm:"not null"`
+	Value          float64     `json:"value"            gorm:"not null"`
 	Description    string      `json:"description"`
-	CouponType     CouponType  `gorm:"not null" json:"coupon_type"`
-	UsageMethod    UsageMethod `gorm:"not null" json:"usage_method"`
+	CouponType     CouponType  `json:"coupon_type"      gorm:"not null"`
+	UsageMethod    UsageMethod `json:"usage_method"     gorm:"not null"`
 	ExpirationDate time.Time   `json:"expiration_date"`
-	Orders         []Order     `gorm:"foreignKey:CouponId;references:Id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"orders,omitempty"`
+	Orders         []Order     `json:"orders,omitempty" gorm:"foreignKey:CouponId;references:Id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }

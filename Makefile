@@ -6,7 +6,7 @@ all: build test
 build:
 	@echo "Building..."
 	
-	
+
 	@go build -o main cmd/api/main.go
 
 # Run the application
@@ -40,4 +40,12 @@ watch:
             fi; \
         fi
 
-.PHONY: all build run test clean watch
+lint:
+	@echo "Linting..."
+	@golangci-lint run ./...
+
+lint-fix:
+	@echo "Linting..."
+	@golangci-lint run ./... --fix
+
+.PHONY: all build run test clean watch lint

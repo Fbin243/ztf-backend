@@ -6,11 +6,10 @@ import (
 	"os"
 	"sync"
 
-	"ztf-backend/internal/entity"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"ztf-backend/internal/entity"
 )
 
 var (

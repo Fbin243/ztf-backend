@@ -1,11 +1,10 @@
 package repo
 
 import (
+	"gorm.io/gorm"
 	"ztf-backend/internal/db"
 	"ztf-backend/internal/entity"
 	"ztf-backend/internal/utils"
-
-	"gorm.io/gorm"
 )
 
 type CouponRepo struct {

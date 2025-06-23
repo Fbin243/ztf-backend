@@ -1,11 +1,10 @@
 package db
 
 import (
-	"ztf-backend/internal/entity"
-	"ztf-backend/internal/utils"
-
 	"github.com/samber/lo"
 	"gorm.io/gorm"
+	"ztf-backend/internal/entity"
+	"ztf-backend/internal/utils"
 )
 
 type BaseRepo[E entity.IBaseEntity] struct {

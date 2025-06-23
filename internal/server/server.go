@@ -8,12 +8,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 	biz "ztf-backend/internal/business"
 	"ztf-backend/internal/repo"
 	"ztf-backend/internal/transport"
-
-	"github.com/joho/godotenv"
-	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {

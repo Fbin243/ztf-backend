@@ -1,10 +1,9 @@
 package biz
 
 import (
+	"github.com/jinzhu/copier"
 	"ztf-backend/internal/entity"
 	"ztf-backend/internal/utils"
-
-	"github.com/jinzhu/copier"
 )
 
 func (b *CouponBusiness) InsertOne(input *entity.CreateCouponInput) (uint, error) {
