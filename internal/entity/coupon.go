@@ -27,5 +27,5 @@ type Coupon struct {
 	CouponType     CouponType  `gorm:"not null" json:"coupon_type"`
 	UsageMethod    UsageMethod `gorm:"not null" json:"usage_method"`
 	ExpirationDate time.Time   `json:"expiration_date"`
-	Orders         []Order     `gorm:"foreignKey:CouponId;references:Id" json:"orders,omitempty"`
+	Orders         []Order     `gorm:"foreignKey:CouponId;references:Id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;" json:"orders,omitempty"`
 }

@@ -15,7 +15,6 @@ type CreateCouponInput struct {
 type UpdateCouponInput struct {
 	Code           *string      `json:"code"`
 	Name           *string      `json:"name"`
-	Value          *float64     `json:"value"`
 	Description    *string      `json:"description"`
 	CouponType     *CouponType  `json:"coupon_type" validate:"omitempty,oneof=percentage fixed"`
 	UsageMethod    *UsageMethod `json:"usage_method" validate:"omitempty,oneof=manual automatic"`

@@ -5,6 +5,7 @@ import (
 	"ztf-backend/internal/utils"
 
 	"github.com/jinzhu/copier"
+	"github.com/samber/lo"
 )
 
 func (b *OrderBusiness) InsertOne(input *entity.CreateOrderInput) (uint, error) {
@@ -17,7 +18,7 @@ func (b *OrderBusiness) InsertOne(input *entity.CreateOrderInput) (uint, error) 
 			return 0, err
 		}
 
-		newOrder.CouponId = coupon.Id
+		newOrder.CouponId = lo.ToPtr(coupon.Id)
 	}
 
 	err := copier.Copy(newOrder, input)
@@ -42,7 +43,7 @@ func (b *OrderBusiness) UpdateOne(id uint, input *entity.UpdateOrderInput) (uint
 			return 0, err
 		}
 
-		existingOrder.CouponId = coupon.Id
+		existingOrder.CouponId = lo.ToPtr(coupon.Id)
 	}
 
 	err = copier.Copy(existingOrder, input)
