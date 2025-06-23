@@ -3,10 +3,11 @@ package transport
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	biz "ztf-backend/internal/business"
 	"ztf-backend/internal/entity"
 	"ztf-backend/internal/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 type OrderHandler struct {
@@ -31,13 +32,13 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 
 func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uintId, err := utils.ConvertStringToUInt(stringId)
+	uuidId, err := utils.ConvertStringToUUID(stringId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	order, err := hdl.orderBusiness.FindById(uintId)
+	order, err := hdl.orderBusiness.FindById(uuidId)
 	if err == utils.ErrorNotFound {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
 		return
@@ -73,7 +74,7 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 
 func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uintId, err := utils.ConvertStringToUInt(stringId)
+	uuidId, err := utils.ConvertStringToUUID(stringId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
@@ -85,7 +86,7 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.UpdateOne(uintId, &order)
+	id, err := hdl.orderBusiness.UpdateOne(uuidId, &order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order"})
 		return
@@ -96,13 +97,13 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 
 func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uintId, err := utils.ConvertStringToUInt(stringId)
+	uuidId, err := utils.ConvertStringToUUID(stringId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	id, err := hdl.orderBusiness.DeleteOne(uintId)
+	id, err := hdl.orderBusiness.DeleteOne(uuidId)
 	if err == utils.ErrorNotFound {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete order"})
 		return

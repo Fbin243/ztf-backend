@@ -23,8 +23,7 @@ tmp/
 .idea
 
 # .env file
-.env.*
-.env
+.env.dev
 
 # Project build
 main
@@ -32,4 +31,3 @@ main
 
 # OS X generated file
 .DS_Store
-

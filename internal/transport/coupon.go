@@ -3,10 +3,11 @@ package transport
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	biz "ztf-backend/internal/business"
 	"ztf-backend/internal/entity"
 	"ztf-backend/internal/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 type CouponHandler struct {
@@ -31,13 +32,13 @@ func (hdl *CouponHandler) GetAllCoupons(ctx *gin.Context) {
 
 func (hdl *CouponHandler) GetCouponById(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uintId, err := utils.ConvertStringToUInt(stringId)
+	uuidId, err := utils.ConvertStringToUUID(stringId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	coupon, err := hdl.couponBusiness.FindById(uintId)
+	coupon, err := hdl.couponBusiness.FindById(uuidId)
 	if err == utils.ErrorNotFound {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Coupon not found"})
 		return
@@ -74,7 +75,7 @@ func (hdl *CouponHandler) CreateCoupon(ctx *gin.Context) {
 
 func (hdl *CouponHandler) UpdateCoupon(ctx *gin.Context) {
 	stringID := ctx.Param("id")
-	uintID, err := utils.ConvertStringToUInt(stringID)
+	uuidID, err := utils.ConvertStringToUUID(stringID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
@@ -86,7 +87,7 @@ func (hdl *CouponHandler) UpdateCoupon(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.couponBusiness.UpdateOne(uintID, &coupon)
+	id, err := hdl.couponBusiness.UpdateOne(uuidID, &coupon)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update coupon"})
 		return
@@ -97,13 +98,13 @@ func (hdl *CouponHandler) UpdateCoupon(ctx *gin.Context) {
 
 func (hdl *CouponHandler) DeleteCoupon(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uintId, err := utils.ConvertStringToUInt(stringId)
+	uuidId, err := utils.ConvertStringToUUID(stringId)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
 
-	id, err := hdl.couponBusiness.DeleteOne(uintId)
+	id, err := hdl.couponBusiness.DeleteOne(uuidId)
 	if err == utils.ErrorNotFound {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": "Coupon not found"})
 		return

@@ -2,15 +2,15 @@ package utils
 
 import (
 	"fmt"
-	"strconv"
+
+	"github.com/google/uuid"
 )
 
-func ConvertStringToUInt(fromValue string) (uint, error) {
-	toValue, err := strconv.ParseUint(fromValue, 10, 0)
+func ConvertStringToUUID(fromValue string) (uuid.UUID, error) {
+	u, err := uuid.Parse(fromValue)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return 0, fmt.Errorf("failed to convert string to uint: %w", err)
+		return uuid.Nil, fmt.Errorf("failed to convert string to uuid: %w", err)
 	}
-
-	return uint(toValue), nil
+	return u, nil
 }

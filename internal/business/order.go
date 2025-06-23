@@ -1,14 +1,18 @@
 package biz
 
-import "ztf-backend/internal/entity"
+import (
+	"ztf-backend/internal/entity"
+
+	"github.com/google/uuid"
+)
 
 type IOrderRepo interface {
-	Exists(id uint) (bool, error)
+	Exists(id uuid.UUID) (bool, error)
 	FindAll() ([]entity.Order, error)
-	FindById(id uint) (*entity.Order, error)
-	InsertOne(order *entity.Order) (uint, error)
-	UpdateOne(order *entity.Order) (uint, error)
-	DeleteOne(id uint) (uint, error)
+	FindById(id uuid.UUID) (*entity.Order, error)
+	InsertOne(order *entity.Order) (uuid.UUID, error)
+	UpdateOne(order *entity.Order) (uuid.UUID, error)
+	DeleteOne(id uuid.UUID) (uuid.UUID, error)
 }
 
 type OrderBusiness struct {
