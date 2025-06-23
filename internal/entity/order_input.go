@@ -9,5 +9,8 @@ type CreateOrderInput struct {
 type UpdateOrderInput struct {
 	PayAmount *int64  `json:"pay_amount"`
 	Info      *string `json:"info"`
-	UserId    *string `json:"user_id"`
+}
+
+type PayOrderInput struct {
+	UserId string `json:"user_id" validate:"required,uuid"`
 }

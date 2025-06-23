@@ -23,6 +23,7 @@ type IOrderRepo interface {
 	UpdateOne(order *entity.Order) (string, error)
 	DeleteOne(id string) (string, error)
 	FindByIdWithMerchantAndUser(id string) (*entity.Order, error)
+	UpdateUserId(id string, userId string) (string, error)
 }
 
 type OrderBusiness struct {

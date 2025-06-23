@@ -3,13 +3,14 @@ package transport
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
-	"github.com/samber/lo"
 	biz "ztf-backend/internal/business"
 	"ztf-backend/internal/entity"
 	"ztf-backend/internal/transport/dto"
 	"ztf-backend/internal/utils"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+	"github.com/samber/lo"
 )
 
 type OrderHandler struct {
@@ -148,11 +149,19 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	err := GetValidator().Struct(order)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	id, err := hdl.orderBusiness.UpdateOne(stringId, &order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
 	ctx.JSON(http.StatusOK, gin.H{"id": id})
 }
 
@@ -163,5 +172,29 @@ func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	ctx.JSON(http.StatusOK, gin.H{"id": id})
+}
+
+func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
+	stringId := ctx.Param("id")
+	var input entity.PayOrderInput
+	if err := ctx.ShouldBindJSON(&input); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err := GetValidator().Struct(input)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	id, err := hdl.orderBusiness.PayForOrder(stringId, &input)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{"id": id})
 }

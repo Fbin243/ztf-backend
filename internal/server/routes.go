@@ -29,6 +29,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/api/v1/orders/:id", s.orderHdl.GetOrderById)
 	r.POST("/api/v1/orders", s.orderHdl.CreateOrder)
 	r.PUT("/api/v1/orders/:id", s.orderHdl.UpdateOrder)
+	r.PUT("/api/v1/orders/:id/pay", s.orderHdl.PayForOrder)
 	r.DELETE("/api/v1/orders/:id", s.orderHdl.DeleteOrder)
 
 	return r

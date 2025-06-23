@@ -5,7 +5,7 @@ import (
 	"ztf-backend/internal/entity"
 )
 
-type OrderRepo struct {
+type OrderRepo struct {	
 	*db.BaseRepo[entity.Order]
 }
 
