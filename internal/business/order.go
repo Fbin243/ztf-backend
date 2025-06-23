@@ -2,27 +2,46 @@ package biz
 
 import (
 	"ztf-backend/internal/entity"
-
-	"github.com/google/uuid"
 )
 
+type IUserRepo interface {
+	Exists(id string) (bool, error)
+	FindByIds(ids []string) ([]entity.User, error)
+}
+
+type IMerchantRepo interface {
+	Exists(id string) (bool, error)
+	FindByIds(ids []string) ([]entity.Merchant, error)
+}
+
 type IOrderRepo interface {
-	Exists(id uuid.UUID) (bool, error)
+	Exists(id string) (bool, error)
 	FindAll() ([]entity.Order, error)
-	FindById(id uuid.UUID) (*entity.Order, error)
-	InsertOne(order *entity.Order) (uuid.UUID, error)
-	UpdateOne(order *entity.Order) (uuid.UUID, error)
-	DeleteOne(id uuid.UUID) (uuid.UUID, error)
+	FindById(id string) (*entity.Order, error)
+	FindByIds(ids []string) ([]entity.Order, error)
+	InsertOne(order *entity.Order) (string, error)
+	UpdateOne(order *entity.Order) (string, error)
+	DeleteOne(id string) (string, error)
+	FindByIdWithMerchantAndUser(id string) (*entity.Order, error)
 }
 
 type OrderBusiness struct {
-	orderRepo  IOrderRepo
-	couponRepo ICouponRepo
+	orderRepo    IOrderRepo
+	merchantRepo IMerchantRepo
+	userRepo     IUserRepo
+	couponRepo   ICouponRepo
 }
 
-func NewOrderBusiness(orderRepo IOrderRepo, couponRepo ICouponRepo) *OrderBusiness {
+func NewOrderBusiness(
+	orderRepo IOrderRepo,
+	couponRepo ICouponRepo,
+	userRepo IUserRepo,
+	merchantRepo IMerchantRepo,
+) *OrderBusiness {
 	return &OrderBusiness{
-		orderRepo:  orderRepo,
-		couponRepo: couponRepo,
+		orderRepo:    orderRepo,
+		couponRepo:   couponRepo,
+		userRepo:     userRepo,
+		merchantRepo: merchantRepo,
 	}
 }

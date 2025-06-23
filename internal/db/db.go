@@ -35,10 +35,6 @@ func createDB() *gorm.DB {
 	log.Printf("Connected to database %s at %s:%s", dbName, dbHost, dbPort)
 
 	// Auto-migrate for development purposes
-	if err := db.AutoMigrate(&entity.Coupon{}); err != nil {
-		log.Fatalf("Failed to auto-migrate Coupon entity: %v", err)
-	}
-
 	if err := db.AutoMigrate(&entity.Order{}); err != nil {
 		log.Fatalf("Failed to auto-migrate Order entity: %v", err)
 	}

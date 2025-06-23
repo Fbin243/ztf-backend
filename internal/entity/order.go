@@ -1,11 +1,11 @@
 package entity
 
-import (
-	"github.com/google/uuid"
-)
-
 type Order struct {
 	*BaseEntity
-	PayAmount int64      `json:"pay_amount" gorm:"not null"`
-	CouponId  *uuid.UUID `json:"coupon_id" gorm:"type:char(36);"`
+	MerchantId string   `json:"merchant_id"`
+	Merchant   Merchant `json:"merchant"`
+	UserId     *string  `json:"user_id"`
+	User       *User    `json:"user"`
+	PayAmount  int64    `json:"pay_amount"`
+	Info       string   `json:"info"`
 }

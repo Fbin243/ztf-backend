@@ -31,15 +31,22 @@ func NewServer() *http.Server {
 
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	log.Printf("Starting server on port %d", port)
+
+	// Dependency injection
 	couponRepo := repo.NewCouponRepo()
 	orderRepo := repo.NewOrderRepo()
+	userRepo := repo.NewUserRepo()
+	merchantRepo := repo.NewMerchantRepo()
+	orderBusiness := biz.NewOrderBusiness(orderRepo, couponRepo, userRepo, merchantRepo)
+	merchantBusiness := biz.NewMerchantBusiness(merchantRepo)
+	userBusiness := biz.NewUserBusiness(userRepo)
+
 	NewServer := &Server{
 		port: port,
 		orderHdl: transport.NewOrderHandler(
-			biz.NewOrderBusiness(
-				orderRepo,
-				couponRepo,
-			),
+			orderBusiness,
+			merchantBusiness,
+			userBusiness,
 		),
 		couponHdl: transport.NewCouponHandler(
 			biz.NewCouponBusiness(

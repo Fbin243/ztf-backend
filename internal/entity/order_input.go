@@ -1,10 +1,13 @@
 package entity
 
 type CreateOrderInput struct {
-	PayAmount  int64   `json:"pay_amount"  validate:"required"`
-	CouponCode *string `json:"coupon_code"`
+	MerchantId string `json:"merchant_id" validate:"required"`
+	PayAmount  int64  `json:"pay_amount"  validate:"required"`
+	Info       string `json:"info"`
 }
+
 type UpdateOrderInput struct {
-	PayAmount  *int64  `json:"pay_amount"`
-	CouponCode *string `json:"coupon_code"`
+	PayAmount *int64  `json:"pay_amount"`
+	Info      *string `json:"info"`
+	UserId    *string `json:"user_id"`
 }

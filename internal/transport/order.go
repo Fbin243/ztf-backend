@@ -3,57 +3,126 @@ package transport
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+	"github.com/samber/lo"
 	biz "ztf-backend/internal/business"
 	"ztf-backend/internal/entity"
+	"ztf-backend/internal/transport/dto"
 	"ztf-backend/internal/utils"
-
-	"github.com/gin-gonic/gin"
 )
 
 type OrderHandler struct {
-	orderBusiness *biz.OrderBusiness
+	orderBusiness    *biz.OrderBusiness
+	merchantBusiness *biz.MerchantBusiness
+	userBusiness     *biz.UserBusiness
 }
 
-func NewOrderHandler(orderBusiness *biz.OrderBusiness) *OrderHandler {
+func NewOrderHandler(
+	orderBusiness *biz.OrderBusiness,
+	merchantBusiness *biz.MerchantBusiness,
+	userBusiness *biz.UserBusiness,
+) *OrderHandler {
 	return &OrderHandler{
-		orderBusiness: orderBusiness,
+		orderBusiness:    orderBusiness,
+		merchantBusiness: merchantBusiness,
+		userBusiness:     userBusiness,
 	}
 }
 
 func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 	orders, err := hdl.orderBusiness.FindAll()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve orders"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, orders)
+	// Find merchant and user info of each order
+	userIDs := []string{}
+	merchantIDs := []string{}
+	for _, order := range orders {
+		if order.UserId != nil {
+			userIDs = append(userIDs, *order.UserId)
+		}
+		merchantIDs = append(merchantIDs, order.MerchantId)
+	}
+
+	merchants, err := hdl.merchantBusiness.FindByIds(merchantIDs)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	merchantMap := map[string]entity.Merchant{}
+	for _, merchant := range merchants {
+		merchantMap[merchant.Id] = merchant
+	}
+
+	users, err := hdl.userBusiness.FindByIds(userIDs)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	userMap := map[string]entity.User{}
+	for _, user := range users {
+		userMap[user.Id] = user
+	}
+
+	orderDtos := lo.Map(orders, func(order entity.Order, _ int) dto.Order {
+		merchant := merchantMap[order.MerchantId]
+		var user *dto.User
+		if order.UserId != nil {
+			user = &dto.User{
+				Id:       *order.UserId,
+				Username: userMap[*order.UserId].Username,
+				Email:    userMap[*order.UserId].Email,
+			}
+		}
+
+		return dto.Order{
+			Id:        order.Id,
+			CreatedAt: order.CreatedAt,
+			UpdatedAt: order.UpdatedAt,
+			PayAmount: order.PayAmount,
+			Info:      order.Info,
+			Merchant: dto.Merchant{
+				Id:       order.MerchantId,
+				Username: merchant.Username,
+				Email:    merchant.Email,
+			},
+			User: user,
+		}
+	})
+
+	ctx.JSON(http.StatusOK, orderDtos)
 }
 
 func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uuidId, err := utils.ConvertStringToUUID(stringId)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
-		return
-	}
-
-	order, err := hdl.orderBusiness.FindById(uuidId)
+	order, err := hdl.orderBusiness.FindByIdWithMerchantAndUser(stringId)
 	if err == utils.ErrorNotFound {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	} else if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve order"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, order)
+	orderDto := &dto.Order{}
+	err = copier.Copy(orderDto, order)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, orderDto)
 }
 
 func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 	var order entity.CreateOrderInput
 	if err := ctx.ShouldBindJSON(&order); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -65,7 +134,7 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 
 	id, err := hdl.orderBusiness.InsertOne(&order)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create order"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -74,43 +143,25 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 
 func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uuidId, err := utils.ConvertStringToUUID(stringId)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
-		return
-	}
-
 	var order entity.UpdateOrderInput
 	if err := ctx.ShouldBindJSON(&order); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	id, err := hdl.orderBusiness.UpdateOne(uuidId, &order)
+	id, err := hdl.orderBusiness.UpdateOne(stringId, &order)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
 	ctx.JSON(http.StatusOK, gin.H{"id": id})
 }
 
 func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	uuidId, err := utils.ConvertStringToUUID(stringId)
+	id, err := hdl.orderBusiness.DeleteOne(stringId)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-
-	id, err := hdl.orderBusiness.DeleteOne(uuidId)
-	if err == utils.ErrorNotFound {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete order"})
-		return
-	} else if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete order"})
-		return
-	}
-
 	ctx.JSON(http.StatusOK, gin.H{"id": id})
 }
