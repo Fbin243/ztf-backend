@@ -8,17 +8,17 @@ import (
 	"strconv"
 	"time"
 
-	biz "ztf-backend/order/internal/business"
-	"ztf-backend/order/internal/repo"
-	"ztf-backend/order/internal/transport"
+	biz "ztf-backend/promotion/internal/business"
+	"ztf-backend/promotion/internal/repo"
+	"ztf-backend/promotion/internal/transport"
 
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
 )
 
 type Server struct {
-	port     int
-	orderHdl *transport.OrderHandler
+	port         int
+	promotionHdl *transport.PromotionHandler
 }
 
 func NewServer() *http.Server {
@@ -33,20 +33,13 @@ func NewServer() *http.Server {
 	log.Printf("Starting server on port %d", port)
 
 	// Dependency injection
-	orderRepo := repo.NewOrderRepo()
-	userRepo := repo.NewUserRepo()
-	merchantRepo := repo.NewMerchantRepo()
-	orderBusiness := biz.NewOrderBusiness(orderRepo, userRepo, merchantRepo)
-	merchantBusiness := biz.NewMerchantBusiness(merchantRepo)
-	userBusiness := biz.NewUserBusiness(userRepo)
+	promotionRepo := repo.NewPromotionRepo()
+	promotionBusiness := biz.NewPromotionBusiness(promotionRepo)
+	promotionHandler := transport.NewPromotionHandler(promotionBusiness)
 
 	NewServer := &Server{
-		port: port,
-		orderHdl: transport.NewOrderHandler(
-			orderBusiness,
-			merchantBusiness,
-			userBusiness,
-		),
+		port:         port,
+		promotionHdl: promotionHandler,
 	}
 
 	// Declare Server config

@@ -17,13 +17,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true, // Enable cookies/auth
 	}))
 
-	// order routes
-	r.GET("/api/v1/orders", s.orderHdl.GetAllOrders)
-	r.GET("/api/v1/orders/:id", s.orderHdl.GetOrderById)
-	r.POST("/api/v1/orders", s.orderHdl.CreateOrder)
-	r.PUT("/api/v1/orders/:id", s.orderHdl.UpdateOrder)
-	r.PUT("/api/v1/orders/:id/pay", s.orderHdl.PayForOrder)
-	r.DELETE("/api/v1/orders/:id", s.orderHdl.DeleteOrder)
+	// promotion routes
+	r.GET("/api/v1/promotions", s.promotionHdl.GetAllPromotions)
+	r.GET("/api/v1/promotions/:id", s.promotionHdl.GetPromotionById)
+	r.POST("/api/v1/promotions", s.promotionHdl.CreatePromotion)
+	r.PUT("/api/v1/promotions/:id", s.promotionHdl.UpdatePromotion)
+	r.DELETE("/api/v1/promotions/:id", s.promotionHdl.DeletePromotion)
 
 	return r
 }
