@@ -22,11 +22,13 @@ const (
 
 type Promotion struct {
 	*base.BaseEntity
-	Code           string        `json:"code"             gorm:"not null"`
-	Name           string        `json:"name"             gorm:"not null"`
-	Value          float64       `json:"value"            gorm:"not null"`
+	Code           string        `json:"code"            gorm:"not null"`
+	Name           string        `json:"name"            gorm:"not null"`
+	Value          float64       `json:"value"           gorm:"not null"`
 	Description    string        `json:"description"`
-	PromotionType  PromotionType `json:"promotion_type"   gorm:"not null"`
-	UsageMethod    UsageMethod   `json:"usage_method"     gorm:"not null"`
+	PromotionType  PromotionType `json:"promotion_type"  gorm:"not null"`
+	UsageMethod    UsageMethod   `json:"usage_method"    gorm:"not null"`
 	ExpirationDate time.Time     `json:"expiration_date"`
+	CampaignId     string        `json:"campaign_id"     gorm:"not null"`
+	// Metadata       map[string]any `json:"metadata"`
 }

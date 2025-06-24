@@ -3,11 +3,10 @@ package biz
 import (
 	"errors"
 
+	"github.com/jinzhu/copier"
 	"ztf-backend/order/internal/entity"
 	errs "ztf-backend/shared/errors"
 	"ztf-backend/shared/pkg/db/base"
-
-	"github.com/jinzhu/copier"
 )
 
 func (b *OrderBusiness) InsertOne(input *entity.CreateOrderInput) (string, error) {

@@ -3,12 +3,16 @@ package biz
 import (
 	"ztf-backend/promotion/internal/entity"
 	errs "ztf-backend/shared/errors"
+	"ztf-backend/shared/pkg/db/base"
 
 	"github.com/jinzhu/copier"
 )
 
 func (b *PromotionBusiness) InsertOne(input *entity.CreatePromotionInput) (string, error) {
-	newPromotion := &entity.Promotion{}
+	newPromotion := &entity.Promotion{
+		BaseEntity: &base.BaseEntity{},
+	}
+
 	err := copier.Copy(newPromotion, input)
 	if err != nil {
 		return "", err
@@ -17,7 +21,10 @@ func (b *PromotionBusiness) InsertOne(input *entity.CreatePromotionInput) (strin
 	return b.promotionRepo.InsertOne(newPromotion)
 }
 
-func (b *PromotionBusiness) UpdateOne(id string, input *entity.UpdatePromotionInput) (string, error) {
+func (b *PromotionBusiness) UpdateOne(
+	id string,
+	input *entity.UpdatePromotionInput,
+) (string, error) {
 	// Check if the promotion exists
 	existingPromotion, err := b.promotionRepo.FindById(id)
 	if err != nil {

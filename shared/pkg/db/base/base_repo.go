@@ -2,11 +2,11 @@ package base
 
 import (
 	"errors"
-	"github.com/google/uuid"
-	errs "ztf-backend/shared/errors"
 
+	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
+	errs "ztf-backend/shared/errors"
 	"ztf-backend/shared/pkg/db"
 )
 

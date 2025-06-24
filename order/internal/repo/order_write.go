@@ -6,7 +6,9 @@ import (
 )
 
 func (r *OrderRepo) UpdateUserId(id string, userId string) (string, error) {
-	result := r.DB.Model(&entity.Order{}).Where("id = ? AND user_id IS NULL", id).Update("user_id", userId)
+	result := r.DB.Model(&entity.Order{}).
+		Where("id = ? AND user_id IS NULL", id).
+		Update("user_id", userId)
 	if result.Error != nil {
 		return "", result.Error
 	}

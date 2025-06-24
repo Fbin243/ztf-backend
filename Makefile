@@ -5,7 +5,7 @@ all: build test
 
 build:
 	@echo "Building..."
-	@go build -o ${SERVICE}/main ${SERVICE}/cmd/api/main.go
+	@go build -o tmp/main ${SERVICE}/cmd/api/main.go
 
 # Run the application
 run:
@@ -46,4 +46,10 @@ lint-fix:
 	@echo "Linting..."
 	@golangci-lint run ./... --fix
 
-.PHONY: all build run test clean watch lint
+order:
+	@air -c ./tools/air-configs/order.air.toml
+
+promotion:
+	@air -c ./tools/air-configs/promotion.air.toml
+
+.PHONY: all build run test clean watch lint order promotion
