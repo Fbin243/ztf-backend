@@ -30,17 +30,17 @@ var (
 )
 
 func GetComposer() *Composer {
-	db := db.GetDB()
-	userRepo := repo.NewUserRepo(db)
-	merchantRepo := repo.NewMerchantRepo(db)
-	orderRepo := repo.NewOrderRepo(db)
-	promotionClient, conn := ComposePromotionClient()
-
-	orderBusiness := biz.NewOrderBusiness(orderRepo, userRepo, merchantRepo, promotionClient)
-	merchantBusiness := biz.NewMerchantBusiness(merchantRepo)
-	userBusiness := biz.NewUserBusiness(userRepo)
-
 	once.Do(func() {
+		db := db.GetDB()
+		userRepo := repo.NewUserRepo(db)
+		merchantRepo := repo.NewMerchantRepo(db)
+		orderRepo := repo.NewOrderRepo(db)
+		promotionClient, conn := ComposePromotionClient()
+
+		orderBusiness := biz.NewOrderBusiness(orderRepo, userRepo, merchantRepo, promotionClient)
+		merchantBusiness := biz.NewMerchantBusiness(merchantRepo)
+		userBusiness := biz.NewUserBusiness(userRepo)
+
 		composer = &Composer{
 			OrderRepo:       orderRepo,
 			UserRepo:        userRepo,

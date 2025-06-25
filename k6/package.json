@@ -1,0 +1,16 @@
+{
+  "name": "ztf-backend-k6",
+  "version": "1.0.0",
+  "description": "testing with grafana k6",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "fbin",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/k6": "^1.0.2"
+  }
+}

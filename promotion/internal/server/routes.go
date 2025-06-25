@@ -18,6 +18,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// promotion routes
+	r.GET("/api/v1/promotions/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+	})
 	r.GET("/api/v1/promotions", s.promotionHdl.GetAllPromotions)
 	r.GET("/api/v1/promotions/search", s.promotionHdl.GetPromotionByCode)
 	r.GET("/api/v1/promotions/:id", s.promotionHdl.GetPromotionById)

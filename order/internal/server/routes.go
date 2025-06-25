@@ -18,6 +18,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	}))
 
 	// order routes
+	r.GET("/api/v1/orders/health", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
+	})
 	r.GET("/api/v1/orders", s.orderHdl.GetAllOrders)
 	r.GET("/api/v1/orders/:id", s.orderHdl.GetOrderById)
 	r.POST("/api/v1/orders", s.orderHdl.CreateOrder)
