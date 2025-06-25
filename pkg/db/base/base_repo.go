@@ -4,19 +4,29 @@ import (
 	"context"
 	"errors"
 
+	errs "ztf-backend/pkg/errors"
+
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
-	"ztf-backend/pkg/db"
-	errs "ztf-backend/pkg/errors"
 )
+
+type IBaseRepo[E IBaseEntity] interface {
+	FindAll(ctx context.Context) ([]E, error)
+	FindById(ctx context.Context, id string) (*E, error)
+	FindByIds(ctx context.Context, ids []string) ([]E, error)
+	InsertOne(ctx context.Context, entity *E) (string, error)
+	UpdateOne(ctx context.Context, entity *E) (string, error)
+	DeleteOne(ctx context.Context, id string) (string, error)
+	Exists(ctx context.Context, id string) (bool, error)
+}
 
 type BaseRepo[E IBaseEntity] struct {
 	*gorm.DB
 }
 
-func NewBaseRepo[E IBaseEntity]() *BaseRepo[E] {
-	return &BaseRepo[E]{db.GetDB()}
+func NewBaseRepo[E IBaseEntity](db *gorm.DB) *BaseRepo[E] {
+	return &BaseRepo[E]{db}
 }
 
 func (r *BaseRepo[E]) FindAll(ctx context.Context) ([]E, error) {

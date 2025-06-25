@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"ztf-backend/order/internal/entity"
+	"ztf-backend/pkg/db/base"
 )
 
 type IUserRepo interface {
@@ -17,13 +18,7 @@ type IMerchantRepo interface {
 }
 
 type IOrderRepo interface {
-	Exists(ctx context.Context, id string) (bool, error)
-	FindAll(ctx context.Context) ([]entity.Order, error)
-	FindById(ctx context.Context, id string) (*entity.Order, error)
-	FindByIds(ctx context.Context, ids []string) ([]entity.Order, error)
-	InsertOne(ctx context.Context, order *entity.Order) (string, error)
-	UpdateOne(ctx context.Context, order *entity.Order) (string, error)
-	DeleteOne(ctx context.Context, id string) (string, error)
+	base.IBaseRepo[entity.Order]
 	FindByIdWithMerchantAndUser(ctx context.Context, id string) (*entity.Order, error)
 	UpdatePaymentInfo(ctx context.Context, id string, order *entity.Order) (string, error)
 }

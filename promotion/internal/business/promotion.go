@@ -3,23 +3,26 @@ package biz
 import (
 	"context"
 
+	"ztf-backend/pkg/db/base"
 	"ztf-backend/promotion/internal/entity"
+
+	"gorm.io/gorm"
 )
 
 type IPromotionRepo interface {
-	FindAll(ctx context.Context) ([]entity.Promotion, error)
-	FindById(ctx context.Context, id string) (*entity.Promotion, error)
-	InsertOne(ctx context.Context, promotion *entity.Promotion) (string, error)
-	UpdateOne(ctx context.Context, promotion *entity.Promotion) (string, error)
-	DeleteOne(ctx context.Context, id string) (string, error)
-	Exists(ctx context.Context, id string) (bool, error)
+	base.IBaseRepo[entity.Promotion]
+	WithTx(tx *gorm.DB) IPromotionRepo
+	UpdateRemainingCount(ctx context.Context, id string) error
 }
 
 type IUserPromotionRepo interface {
+	WithTx(tx *gorm.DB) IUserPromotionRepo
+	Exists(ctx context.Context, userId string, promotionId string) (bool, error)
+	FindByUserIdAndPromotionId(ctx context.Context, userId string, promotionId string) (*entity.UserPromotion, error)
 	FindByUserId(ctx context.Context, userId string) ([]entity.UserPromotion, error)
-	InsertOne(ctx context.Context, userPromotion *entity.UserPromotion) (string, error)
-	UpdateOne(ctx context.Context, userPromotion *entity.UserPromotion) (string, error)
-	DeleteOne(ctx context.Context, id string) (string, error)
+	UpsertOne(ctx context.Context, userPromotion *entity.UserPromotion) (string, string, error)
+	DeleteOne(ctx context.Context, userId string, promotionId string) (string, string, error)
+	MarkAsUsed(ctx context.Context, req *entity.MarkAsUsedReq) error
 }
 
 type PromotionBusiness struct {
@@ -27,8 +30,9 @@ type PromotionBusiness struct {
 	userPromotionRepo IUserPromotionRepo
 }
 
-func NewPromotionBusiness(promotionRepo IPromotionRepo) *PromotionBusiness {
+func NewPromotionBusiness(promotionRepo IPromotionRepo, userPromotionRepo IUserPromotionRepo) *PromotionBusiness {
 	return &PromotionBusiness{
-		promotionRepo: promotionRepo,
+		promotionRepo:     promotionRepo,
+		userPromotionRepo: userPromotionRepo,
 	}
 }

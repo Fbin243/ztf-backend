@@ -4,9 +4,11 @@ import (
 	"log"
 	"sync"
 
-	"google.golang.org/grpc"
 	biz "ztf-backend/order/internal/business"
 	"ztf-backend/order/internal/repo"
+	"ztf-backend/pkg/db"
+
+	"google.golang.org/grpc"
 )
 
 type Composer struct {
@@ -28,9 +30,10 @@ var (
 )
 
 func GetComposer() *Composer {
-	userRepo := repo.NewUserRepo()
-	merchantRepo := repo.NewMerchantRepo()
-	orderRepo := repo.NewOrderRepo()
+	db := db.GetDB()
+	userRepo := repo.NewUserRepo(db)
+	merchantRepo := repo.NewMerchantRepo(db)
+	orderRepo := repo.NewOrderRepo(db)
 	promotionClient, conn := ComposePromotionClient()
 
 	orderBusiness := biz.NewOrderBusiness(orderRepo, userRepo, merchantRepo, promotionClient)
