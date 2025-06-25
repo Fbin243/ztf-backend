@@ -23,7 +23,7 @@ func NewPromotionHandler(PromotionBusiness *biz.PromotionBusiness) *PromotionHan
 }
 
 func (hdl *PromotionHandler) GetAllPromotions(ctx *gin.Context) {
-	promotions, err := hdl.promotionBusiness.FindAll()
+	promotions, err := hdl.promotionBusiness.FindAll(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -34,7 +34,7 @@ func (hdl *PromotionHandler) GetAllPromotions(ctx *gin.Context) {
 
 func (hdl *PromotionHandler) GetPromotionById(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	promotion, err := hdl.promotionBusiness.FindById(stringId)
+	promotion, err := hdl.promotionBusiness.FindById(ctx, stringId)
 	if errors.Is(err, errs.ErrorNotFound) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -59,7 +59,7 @@ func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.promotionBusiness.InsertOne(&promotion)
+	id, err := hdl.promotionBusiness.InsertOne(ctx, &promotion)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -82,7 +82,7 @@ func (hdl *PromotionHandler) UpdatePromotion(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.promotionBusiness.UpdateOne(stringID, &promotion)
+	id, err := hdl.promotionBusiness.UpdateOne(ctx, stringID, &promotion)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -92,7 +92,7 @@ func (hdl *PromotionHandler) UpdatePromotion(ctx *gin.Context) {
 
 func (hdl *PromotionHandler) DeletePromotion(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	id, err := hdl.promotionBusiness.DeleteOne(stringId)
+	id, err := hdl.promotionBusiness.DeleteOne(ctx, stringId)
 	if errors.Is(err, errs.ErrorNotFound) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return

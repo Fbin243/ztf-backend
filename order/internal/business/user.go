@@ -1,6 +1,8 @@
 package biz
 
 import (
+	"context"
+
 	"ztf-backend/order/internal/entity"
 )
 
@@ -12,6 +14,6 @@ func NewUserBusiness(userRepo IUserRepo) *UserBusiness {
 	return &UserBusiness{userRepo: userRepo}
 }
 
-func (b *UserBusiness) FindByIds(ids []string) ([]entity.User, error) {
-	return b.userRepo.FindByIds(ids)
+func (b *UserBusiness) FindByIds(ctx context.Context, ids []string) ([]entity.User, error) {
+	return b.userRepo.FindByIds(ctx, ids)
 }

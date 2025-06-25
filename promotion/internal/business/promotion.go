@@ -1,23 +1,25 @@
 package biz
 
 import (
+	"context"
+
 	"ztf-backend/promotion/internal/entity"
 )
 
 type IPromotionRepo interface {
-	FindAll() ([]entity.Promotion, error)
-	FindById(id string) (*entity.Promotion, error)
-	InsertOne(promotion *entity.Promotion) (string, error)
-	UpdateOne(promotion *entity.Promotion) (string, error)
-	DeleteOne(id string) (string, error)
-	Exists(id string) (bool, error)
+	FindAll(ctx context.Context) ([]entity.Promotion, error)
+	FindById(ctx context.Context, id string) (*entity.Promotion, error)
+	InsertOne(ctx context.Context, promotion *entity.Promotion) (string, error)
+	UpdateOne(ctx context.Context, promotion *entity.Promotion) (string, error)
+	DeleteOne(ctx context.Context, id string) (string, error)
+	Exists(ctx context.Context, id string) (bool, error)
 }
 
 type IUserPromotionRepo interface {
-	FindByUserId(userId string) ([]entity.UserPromotion, error)
-	InsertOne(userPromotion *entity.UserPromotion) (string, error)
-	UpdateOne(userPromotion *entity.UserPromotion) (string, error)
-	DeleteOne(id string) (string, error)
+	FindByUserId(ctx context.Context, userId string) ([]entity.UserPromotion, error)
+	InsertOne(ctx context.Context, userPromotion *entity.UserPromotion) (string, error)
+	UpdateOne(ctx context.Context, userPromotion *entity.UserPromotion) (string, error)
+	DeleteOne(ctx context.Context, id string) (string, error)
 }
 
 type PromotionBusiness struct {

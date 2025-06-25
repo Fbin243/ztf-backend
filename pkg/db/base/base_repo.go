@@ -1,6 +1,7 @@
 package base
 
 import (
+	"context"
 	"errors"
 
 	"ztf-backend/pkg/db"
@@ -20,17 +21,17 @@ func NewBaseRepo[E IBaseEntity]() *BaseRepo[E] {
 	return &BaseRepo[E]{db.GetDB()}
 }
 
-func (r *BaseRepo[E]) FindAll() ([]E, error) {
+func (r *BaseRepo[E]) FindAll(ctx context.Context) ([]E, error) {
 	var entities []E
-	if err := r.DB.Find(&entities).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Find(&entities).Error; err != nil {
 		return nil, err
 	}
 	return entities, nil
 }
 
-func (r *BaseRepo[E]) FindById(id string) (*E, error) {
+func (r *BaseRepo[E]) FindById(ctx context.Context, id string) (*E, error) {
 	var e E
-	err := r.DB.First(&e, "id = ?", id).Error
+	err := r.DB.WithContext(ctx).First(&e, "id = ?", id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, errs.ErrorNotFound
 	}
@@ -40,32 +41,32 @@ func (r *BaseRepo[E]) FindById(id string) (*E, error) {
 	return &e, nil
 }
 
-func (r *BaseRepo[E]) FindByIds(ids []string) ([]E, error) {
+func (r *BaseRepo[E]) FindByIds(ctx context.Context, ids []string) ([]E, error) {
 	var entities []E
-	if err := r.DB.Where("id IN (?)", ids).Find(&entities).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Where("id IN (?)", ids).Find(&entities).Error; err != nil {
 		return nil, err
 	}
 	return entities, nil
 }
 
-func (r *BaseRepo[E]) InsertOne(entity *E) (string, error) {
+func (r *BaseRepo[E]) InsertOne(ctx context.Context, entity *E) (string, error) {
 	lo.FromPtr(entity).SetId(uuid.New().String())
-	if err := r.DB.Create(entity).Error; err != nil {
+	if err := r.DB.WithContext(ctx).Create(entity).Error; err != nil {
 		return "", err
 	}
 	return lo.FromPtr(entity).GetId(), nil
 }
 
-func (r *BaseRepo[E]) UpdateOne(entity *E) (string, error) {
-	if err := r.DB.Save(entity).Error; err != nil {
+func (r *BaseRepo[E]) UpdateOne(ctx context.Context, entity *E) (string, error) {
+	if err := r.DB.WithContext(ctx).Save(entity).Error; err != nil {
 		return "", err
 	}
 	return lo.FromPtr(entity).GetId(), nil
 }
 
-func (r *BaseRepo[E]) DeleteOne(id string) (string, error) {
+func (r *BaseRepo[E]) DeleteOne(ctx context.Context, id string) (string, error) {
 	var e E
-	err := r.DB.Delete(&e, id).Error
+	err := r.DB.WithContext(ctx).Delete(&e, id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return "", errs.ErrorNotFound
 	}
@@ -75,10 +76,10 @@ func (r *BaseRepo[E]) DeleteOne(id string) (string, error) {
 	return id, nil
 }
 
-func (r *BaseRepo[E]) Exists(id string) (bool, error) {
+func (r *BaseRepo[E]) Exists(ctx context.Context, id string) (bool, error) {
 	var count int64
 	var e E
-	err := r.DB.Model(&e).Where("id = ?", id).Count(&count).Error
+	err := r.DB.WithContext(ctx).Model(&e).Where("id = ?", id).Count(&count).Error
 	if err != nil {
 		return false, err
 	}

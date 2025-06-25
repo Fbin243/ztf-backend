@@ -1,6 +1,8 @@
 package biz
 
 import (
+	"context"
+
 	"ztf-backend/order/internal/entity"
 )
 
@@ -12,6 +14,6 @@ func NewMerchantBusiness(merchantRepo IMerchantRepo) *MerchantBusiness {
 	return &MerchantBusiness{merchantRepo: merchantRepo}
 }
 
-func (b *MerchantBusiness) FindByIds(ids []string) ([]entity.Merchant, error) {
-	return b.merchantRepo.FindByIds(ids)
+func (b *MerchantBusiness) FindByIds(ctx context.Context, ids []string) ([]entity.Merchant, error) {
+	return b.merchantRepo.FindByIds(ctx, ids)
 }

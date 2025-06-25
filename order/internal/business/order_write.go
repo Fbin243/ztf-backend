@@ -11,9 +11,9 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-func (b *OrderBusiness) InsertOne(input *entity.CreateOrderInput) (string, error) {
+func (b *OrderBusiness) InsertOne(ctx context.Context, input *entity.CreateOrderInput) (string, error) {
 	// Check if the merchant exists
-	exists, err := b.merchantRepo.Exists(input.MerchantId)
+	exists, err := b.merchantRepo.Exists(ctx, input.MerchantId)
 	if err != nil {
 		return "", err
 	}
@@ -29,12 +29,12 @@ func (b *OrderBusiness) InsertOne(input *entity.CreateOrderInput) (string, error
 		return "", err
 	}
 
-	return b.orderRepo.InsertOne(newOrder)
+	return b.orderRepo.InsertOne(ctx, newOrder)
 }
 
-func (b *OrderBusiness) UpdateOne(id string, input *entity.UpdateOrderInput) (string, error) {
+func (b *OrderBusiness) UpdateOne(ctx context.Context, id string, input *entity.UpdateOrderInput) (string, error) {
 	// Get the existing order
-	existingOrder, err := b.orderRepo.FindById(id)
+	existingOrder, err := b.orderRepo.FindById(ctx, id)
 	if err != nil {
 		return "", err
 	}
@@ -44,12 +44,12 @@ func (b *OrderBusiness) UpdateOne(id string, input *entity.UpdateOrderInput) (st
 		return "", err
 	}
 
-	return b.orderRepo.UpdateOne(existingOrder)
+	return b.orderRepo.UpdateOne(ctx, existingOrder)
 }
 
-func (b *OrderBusiness) DeleteOne(id string) (string, error) {
+func (b *OrderBusiness) DeleteOne(ctx context.Context, id string) (string, error) {
 	// Check if the order exists
-	exists, err := b.orderRepo.Exists(id)
+	exists, err := b.orderRepo.Exists(ctx, id)
 	if err != nil {
 		return "", err
 	}
@@ -57,12 +57,12 @@ func (b *OrderBusiness) DeleteOne(id string) (string, error) {
 		return "", errs.ErrorNotFound
 	}
 
-	return b.orderRepo.DeleteOne(id)
+	return b.orderRepo.DeleteOne(ctx, id)
 }
 
-func (b *OrderBusiness) PayForOrder(id string, input *entity.PayOrderInput) (string, error) {
+func (b *OrderBusiness) PayForOrder(ctx context.Context, id string, input *entity.PayOrderInput) (string, error) {
 	// Check if the order exists
-	order, err := b.orderRepo.FindById(id)
+	order, err := b.orderRepo.FindById(ctx, id)
 	if err != nil {
 		return "", err
 	}
@@ -78,7 +78,7 @@ func (b *OrderBusiness) PayForOrder(id string, input *entity.PayOrderInput) (str
 	}
 
 	// Check if the user exists
-	exists, err := b.userRepo.Exists(input.UserId)
+	exists, err := b.userRepo.Exists(ctx, input.UserId)
 	if err != nil {
 		return "", err
 	}
@@ -88,7 +88,7 @@ func (b *OrderBusiness) PayForOrder(id string, input *entity.PayOrderInput) (str
 
 	// Verify the promotion
 	if input.PromotionId != nil {
-		verified, err := b.promotionClient.VerifyPromotion(context.Background(), &entity.VerifyPromotionReq{
+		verified, err := b.promotionClient.VerifyPromotion(ctx, &entity.VerifyPromotionReq{
 			PromotionId:     *input.PromotionId,
 			UserId:          input.UserId,
 			OrderId:         id,
@@ -111,7 +111,7 @@ func (b *OrderBusiness) PayForOrder(id string, input *entity.PayOrderInput) (str
 	order.PromotionAmount = input.PromotionAmount
 	order.PayAmount = input.PayAmount
 
-	id, err = b.orderRepo.UpdatePaymentInfo(id, order)
+	id, err = b.orderRepo.UpdatePaymentInfo(ctx, id, order)
 	if errors.Is(err, errs.ErrorNoRowsAffected) {
 		return "", errors.New("order is already paid")
 	}

@@ -5,7 +5,7 @@ import (
 
 	biz "ztf-backend/order/internal/business"
 	"ztf-backend/order/internal/entity"
-	dto2 "ztf-backend/order/internal/transport/dto"
+	"ztf-backend/order/internal/transport/dto"
 	errs "ztf-backend/pkg/errors"
 
 	"github.com/gin-gonic/gin"
@@ -32,7 +32,7 @@ func NewOrderHandler(
 }
 
 func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
-	orders, err := hdl.orderBusiness.FindAll()
+	orders, err := hdl.orderBusiness.FindAll(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,7 +48,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 		merchantIDs = append(merchantIDs, order.MerchantId)
 	}
 
-	merchants, err := hdl.merchantBusiness.FindByIds(merchantIDs)
+	merchants, err := hdl.merchantBusiness.FindByIds(ctx, merchantIDs)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -59,7 +59,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 		merchantMap[merchant.Id] = merchant
 	}
 
-	users, err := hdl.userBusiness.FindByIds(userIDs)
+	users, err := hdl.userBusiness.FindByIds(ctx, userIDs)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -70,24 +70,24 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 		userMap[user.Id] = user
 	}
 
-	orderDtos := lo.Map(orders, func(order entity.Order, _ int) dto2.Order {
+	orderDtos := lo.Map(orders, func(order entity.Order, _ int) dto.Order {
 		merchant := merchantMap[order.MerchantId]
-		var user *dto2.User
+		var user *dto.User
 		if order.UserId != nil {
-			user = &dto2.User{
+			user = &dto.User{
 				Id:       *order.UserId,
 				Username: userMap[*order.UserId].Username,
 				Email:    userMap[*order.UserId].Email,
 			}
 		}
 
-		return dto2.Order{
+		return dto.Order{
 			Id:        order.Id,
 			CreatedAt: order.CreatedAt,
 			UpdatedAt: order.UpdatedAt,
 			PayAmount: order.PayAmount,
 			Info:      order.Info,
-			Merchant: dto2.Merchant{
+			Merchant: dto.Merchant{
 				Id:       order.MerchantId,
 				Username: merchant.Username,
 				Email:    merchant.Email,
@@ -101,7 +101,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 
 func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	order, err := hdl.orderBusiness.FindByIdWithMerchantAndUser(stringId)
+	order, err := hdl.orderBusiness.FindByIdWithMerchantAndUser(ctx, stringId)
 	if err == errs.ErrorNotFound {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -110,7 +110,7 @@ func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 		return
 	}
 
-	orderDto := &dto2.Order{}
+	orderDto := &dto.Order{}
 	err = copier.Copy(orderDto, order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -133,7 +133,7 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.InsertOne(&order)
+	id, err := hdl.orderBusiness.InsertOne(ctx, &order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -156,7 +156,7 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.UpdateOne(stringId, &order)
+	id, err := hdl.orderBusiness.UpdateOne(ctx, stringId, &order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -167,7 +167,7 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 
 func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	id, err := hdl.orderBusiness.DeleteOne(stringId)
+	id, err := hdl.orderBusiness.DeleteOne(ctx, stringId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -190,7 +190,7 @@ func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.PayForOrder(stringId, &input)
+	id, err := hdl.orderBusiness.PayForOrder(ctx, stringId, &input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

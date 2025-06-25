@@ -24,7 +24,7 @@ func (h *PromotionHandler) VerifyPromotion(ctx context.Context, req *promotion.V
 		Verified: false,
 	}
 
-	verified, err := h.promotionBusiness.VerifyPromotion(&entity.VerifyPromotionReq{
+	verified, err := h.promotionBusiness.VerifyPromotion(ctx, &entity.VerifyPromotionReq{
 		PromotionId:     req.PromotionId,
 		UserId:          req.UserId,
 		OrderId:         req.OrderId,

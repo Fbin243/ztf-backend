@@ -1,6 +1,7 @@
 package biz
 
 import (
+	"context"
 	"errors"
 	"log"
 	"time"
@@ -12,7 +13,7 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-func (b *PromotionBusiness) InsertOne(input *entity.CreatePromotionInput) (string, error) {
+func (b *PromotionBusiness) InsertOne(ctx context.Context, input *entity.CreatePromotionInput) (string, error) {
 	newPromotion := &entity.Promotion{
 		BaseEntity: &base.BaseEntity{},
 	}
@@ -22,15 +23,16 @@ func (b *PromotionBusiness) InsertOne(input *entity.CreatePromotionInput) (strin
 		return "", err
 	}
 
-	return b.promotionRepo.InsertOne(newPromotion)
+	return b.promotionRepo.InsertOne(ctx, newPromotion)
 }
 
 func (b *PromotionBusiness) UpdateOne(
+	ctx context.Context,
 	id string,
 	input *entity.UpdatePromotionInput,
 ) (string, error) {
 	// Check if the promotion exists
-	existingPromotion, err := b.promotionRepo.FindById(id)
+	existingPromotion, err := b.promotionRepo.FindById(ctx, id)
 	if err != nil {
 		return "", err
 	}
@@ -40,12 +42,12 @@ func (b *PromotionBusiness) UpdateOne(
 		return "", err
 	}
 
-	return b.promotionRepo.UpdateOne(existingPromotion)
+	return b.promotionRepo.UpdateOne(ctx, existingPromotion)
 }
 
-func (b *PromotionBusiness) DeleteOne(id string) (string, error) {
+func (b *PromotionBusiness) DeleteOne(ctx context.Context, id string) (string, error) {
 	// Check if the promotion exists
-	exists, err := b.promotionRepo.Exists(id)
+	exists, err := b.promotionRepo.Exists(ctx, id)
 	if err != nil {
 		return "", err
 	}
@@ -53,14 +55,14 @@ func (b *PromotionBusiness) DeleteOne(id string) (string, error) {
 		return "", errs.ErrorNotFound
 	}
 
-	return b.promotionRepo.DeleteOne(id)
+	return b.promotionRepo.DeleteOne(ctx, id)
 }
 
-func (b *PromotionBusiness) VerifyPromotion(req *entity.VerifyPromotionReq) (bool, error) {
+func (b *PromotionBusiness) VerifyPromotion(ctx context.Context, req *entity.VerifyPromotionReq) (bool, error) {
 	log.Printf("Verifying promotion: %+v", req)
 
 	// Check if the promotion exists
-	promotion, err := b.promotionRepo.FindById(req.PromotionId)
+	promotion, err := b.promotionRepo.FindById(ctx, req.PromotionId)
 	if err != nil {
 		return false, err
 	}
@@ -82,9 +84,9 @@ func (b *PromotionBusiness) VerifyPromotion(req *entity.VerifyPromotionReq) (boo
 	return true, nil
 }
 
-func (b *PromotionBusiness) ApplyPromotion(req *entity.VerifyPromotionReq) (bool, error) {
+func (b *PromotionBusiness) ApplyPromotion(ctx context.Context, req *entity.VerifyPromotionReq) (bool, error) {
 	// Validate the promotion
-	valid, err := b.VerifyPromotion(req)
+	valid, err := b.VerifyPromotion(ctx, req)
 	if err != nil {
 		return false, err
 	}
@@ -93,7 +95,7 @@ func (b *PromotionBusiness) ApplyPromotion(req *entity.VerifyPromotionReq) (bool
 	}
 
 	// Apply the promotion
-	// promotion, err := b.promotionRepo.FindById(req.PromotionId)
+	// promotion, err := b.promotionRepo.FindById(ctx, req.PromotionId)
 	// if err != nil {
 	// 	return false, err
 	// }
