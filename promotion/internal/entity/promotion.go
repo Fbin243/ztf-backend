@@ -3,7 +3,7 @@ package entity
 import (
 	"time"
 
-	"ztf-backend/shared/pkg/db/base"
+	"ztf-backend/pkg/db/base"
 )
 
 type PromotionType string
@@ -30,5 +30,14 @@ type Promotion struct {
 	UsageMethod    UsageMethod   `json:"usage_method"    gorm:"not null"`
 	ExpirationDate time.Time     `json:"expiration_date"`
 	CampaignId     string        `json:"campaign_id"     gorm:"not null"`
+	RemainingCount int64         `json:"remaining_count" gorm:"not null"`
+	IsForAll       bool          `json:"is_for_all"      gorm:"not null"`
 	// Metadata       map[string]any `json:"metadata"`
+}
+
+func (p *Promotion) CalculatePromotionAmount(amount int64) int64 {
+	if p.PromotionType == PromotionTypePercentage {
+		return int64(float64(amount) * p.Value)
+	}
+	return int64(p.Value)
 }

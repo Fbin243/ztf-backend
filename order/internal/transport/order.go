@@ -3,25 +3,26 @@ package transport
 import (
 	"net/http"
 
+	biz "ztf-backend/order/internal/business"
+	"ztf-backend/order/internal/entity"
+	dto2 "ztf-backend/order/internal/transport/dto"
+	errs "ztf-backend/pkg/errors"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/samber/lo"
-	biz2 "ztf-backend/order/internal/business"
-	entity2 "ztf-backend/order/internal/entity"
-	dto2 "ztf-backend/order/internal/transport/dto"
-	error2 "ztf-backend/shared/errors"
 )
 
 type OrderHandler struct {
-	orderBusiness    *biz2.OrderBusiness
-	merchantBusiness *biz2.MerchantBusiness
-	userBusiness     *biz2.UserBusiness
+	orderBusiness    *biz.OrderBusiness
+	merchantBusiness *biz.MerchantBusiness
+	userBusiness     *biz.UserBusiness
 }
 
 func NewOrderHandler(
-	orderBusiness *biz2.OrderBusiness,
-	merchantBusiness *biz2.MerchantBusiness,
-	userBusiness *biz2.UserBusiness,
+	orderBusiness *biz.OrderBusiness,
+	merchantBusiness *biz.MerchantBusiness,
+	userBusiness *biz.UserBusiness,
 ) *OrderHandler {
 	return &OrderHandler{
 		orderBusiness:    orderBusiness,
@@ -53,7 +54,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 		return
 	}
 
-	merchantMap := map[string]entity2.Merchant{}
+	merchantMap := map[string]entity.Merchant{}
 	for _, merchant := range merchants {
 		merchantMap[merchant.Id] = merchant
 	}
@@ -64,12 +65,12 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 		return
 	}
 
-	userMap := map[string]entity2.User{}
+	userMap := map[string]entity.User{}
 	for _, user := range users {
 		userMap[user.Id] = user
 	}
 
-	orderDtos := lo.Map(orders, func(order entity2.Order, _ int) dto2.Order {
+	orderDtos := lo.Map(orders, func(order entity.Order, _ int) dto2.Order {
 		merchant := merchantMap[order.MerchantId]
 		var user *dto2.User
 		if order.UserId != nil {
@@ -101,7 +102,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 	stringId := ctx.Param("id")
 	order, err := hdl.orderBusiness.FindByIdWithMerchantAndUser(stringId)
-	if err == error2.ErrorNotFound {
+	if err == errs.ErrorNotFound {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	} else if err != nil {
@@ -120,7 +121,7 @@ func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
-	var order entity2.CreateOrderInput
+	var order entity.CreateOrderInput
 	if err := ctx.ShouldBindJSON(&order); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -143,7 +144,7 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 
 func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	var order entity2.UpdateOrderInput
+	var order entity.UpdateOrderInput
 	if err := ctx.ShouldBindJSON(&order); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -177,7 +178,7 @@ func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 
 func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	var input entity2.PayOrderInput
+	var input entity.PayOrderInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

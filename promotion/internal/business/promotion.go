@@ -13,8 +13,16 @@ type IPromotionRepo interface {
 	Exists(id string) (bool, error)
 }
 
+type IUserPromotionRepo interface {
+	FindByUserId(userId string) ([]entity.UserPromotion, error)
+	InsertOne(userPromotion *entity.UserPromotion) (string, error)
+	UpdateOne(userPromotion *entity.UserPromotion) (string, error)
+	DeleteOne(id string) (string, error)
+}
+
 type PromotionBusiness struct {
-	promotionRepo IPromotionRepo
+	promotionRepo     IPromotionRepo
+	userPromotionRepo IUserPromotionRepo
 }
 
 func NewPromotionBusiness(promotionRepo IPromotionRepo) *PromotionBusiness {

@@ -1,6 +1,6 @@
 package entity
 
-import "ztf-backend/shared/pkg/db/base"
+import "ztf-backend/pkg/db/base"
 
 type Merchant struct {
 	*base.BaseEntity

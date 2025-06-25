@@ -1,6 +1,8 @@
 package biz
 
 import (
+	"context"
+
 	"ztf-backend/order/internal/entity"
 )
 
@@ -23,23 +25,30 @@ type IOrderRepo interface {
 	UpdateOne(order *entity.Order) (string, error)
 	DeleteOne(id string) (string, error)
 	FindByIdWithMerchantAndUser(id string) (*entity.Order, error)
-	UpdateUserId(id string, userId string) (string, error)
+	UpdatePaymentInfo(id string, order *entity.Order) (string, error)
+}
+
+type IPromotionClient interface {
+	VerifyPromotion(ctx context.Context, req *entity.VerifyPromotionReq) (bool, error)
 }
 
 type OrderBusiness struct {
-	orderRepo    IOrderRepo
-	merchantRepo IMerchantRepo
-	userRepo     IUserRepo
+	orderRepo       IOrderRepo
+	merchantRepo    IMerchantRepo
+	userRepo        IUserRepo
+	promotionClient IPromotionClient
 }
 
 func NewOrderBusiness(
 	orderRepo IOrderRepo,
 	userRepo IUserRepo,
 	merchantRepo IMerchantRepo,
+	promotionClient IPromotionClient,
 ) *OrderBusiness {
 	return &OrderBusiness{
-		orderRepo:    orderRepo,
-		userRepo:     userRepo,
-		merchantRepo: merchantRepo,
+		orderRepo:       orderRepo,
+		userRepo:        userRepo,
+		merchantRepo:    merchantRepo,
+		promotionClient: promotionClient,
 	}
 }

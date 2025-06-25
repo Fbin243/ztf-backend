@@ -2,18 +2,18 @@ package repo
 
 import (
 	"ztf-backend/order/internal/entity"
-	error2 "ztf-backend/shared/errors"
+	errs "ztf-backend/pkg/errors"
 )
 
-func (r *OrderRepo) UpdateUserId(id string, userId string) (string, error) {
+func (r *OrderRepo) UpdatePaymentInfo(id string, order *entity.Order) (string, error) {
 	result := r.DB.Model(&entity.Order{}).
 		Where("id = ? AND user_id IS NULL", id).
-		Update("user_id", userId)
+		Updates(order)
 	if result.Error != nil {
 		return "", result.Error
 	}
 	if result.RowsAffected == 0 {
-		return "", error2.ErrorNoRowsAffected
+		return "", errs.ErrorNoRowsAffected
 	}
 
 	return id, nil

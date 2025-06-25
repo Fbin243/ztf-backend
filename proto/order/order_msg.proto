@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+package promotion;
+
+option go_package = "ztf-backend/proto/pb/order";

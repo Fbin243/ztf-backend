@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/http"
 
+	errs "ztf-backend/pkg/errors"
+	validation "ztf-backend/pkg/validation"
 	biz "ztf-backend/promotion/internal/business"
 	"ztf-backend/promotion/internal/entity"
-	errs "ztf-backend/shared/errors"
-	"ztf-backend/shared/validation"
 
 	"github.com/gin-gonic/gin"
 )

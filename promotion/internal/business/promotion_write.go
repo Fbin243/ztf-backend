@@ -1,9 +1,13 @@
 package biz
 
 import (
+	"errors"
+	"log"
+	"time"
+
+	"ztf-backend/pkg/db/base"
+	errs "ztf-backend/pkg/errors"
 	"ztf-backend/promotion/internal/entity"
-	errs "ztf-backend/shared/errors"
-	"ztf-backend/shared/pkg/db/base"
 
 	"github.com/jinzhu/copier"
 )
@@ -50,4 +54,49 @@ func (b *PromotionBusiness) DeleteOne(id string) (string, error) {
 	}
 
 	return b.promotionRepo.DeleteOne(id)
+}
+
+func (b *PromotionBusiness) VerifyPromotion(req *entity.VerifyPromotionReq) (bool, error) {
+	log.Printf("Verifying promotion: %+v", req)
+
+	// Check if the promotion exists
+	promotion, err := b.promotionRepo.FindById(req.PromotionId)
+	if err != nil {
+		return false, err
+	}
+
+	// Check if the promotion is expired
+	if promotion.ExpirationDate.Before(time.Now()) {
+		return false, errors.New("promotion is expired")
+	}
+
+	// Check the promotion amount
+	if promotion.CalculatePromotionAmount(req.Amount) != req.PromotionAmount {
+		return false, errors.New("promotion amount is invalid")
+	}
+
+	// Check if the promotion is for all
+	if !promotion.IsForAll {
+	}
+
+	return true, nil
+}
+
+func (b *PromotionBusiness) ApplyPromotion(req *entity.VerifyPromotionReq) (bool, error) {
+	// Validate the promotion
+	valid, err := b.VerifyPromotion(req)
+	if err != nil {
+		return false, err
+	}
+	if !valid {
+		return false, errors.New("promotion is invalid")
+	}
+
+	// Apply the promotion
+	// promotion, err := b.promotionRepo.FindById(req.PromotionId)
+	// if err != nil {
+	// 	return false, err
+	// }
+
+	return true, nil
 }

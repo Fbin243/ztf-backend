@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package promotion;
+
+option go_package = "ztf-backend/proto/pb/order";
+
+// import "order/order_msg.proto";
+
+service OrderService {
+  // rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+}

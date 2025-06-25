@@ -52,4 +52,12 @@ order:
 promotion:
 	@air -c ./tools/air-configs/promotion.air.toml
 
-.PHONY: all build run test clean watch lint order promotion
+protoc:
+	@echo "Generating protobuf code..."
+	@find ./proto -name "*.proto" -exec \
+	protoc --proto_path=./proto \
+	--go_out=./proto/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./proto/pb --go-grpc_opt=paths=source_relative \
+	{} \;
+
+.PHONY: all build run test clean watch lint order promotion protoc

@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"time"
 
+	"ztf-backend/order/internal/composer"
+	"ztf-backend/order/internal/transport"
+
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
-	biz "ztf-backend/order/internal/business"
-	"ztf-backend/order/internal/repo"
-	"ztf-backend/order/internal/transport"
 )
 
 type Server struct {
@@ -28,23 +28,16 @@ func NewServer() *http.Server {
 		fmt.Printf("Error loading .env.%s file: %v\n", appEnv, err)
 	}
 
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	port, _ := strconv.Atoi(os.Getenv("ORDER_PORT"))
 	log.Printf("Starting server on port %d", port)
 
-	// Dependency injection
-	orderRepo := repo.NewOrderRepo()
-	userRepo := repo.NewUserRepo()
-	merchantRepo := repo.NewMerchantRepo()
-	orderBusiness := biz.NewOrderBusiness(orderRepo, userRepo, merchantRepo)
-	merchantBusiness := biz.NewMerchantBusiness(merchantRepo)
-	userBusiness := biz.NewUserBusiness(userRepo)
-
+	composer := composer.GetComposer()
 	NewServer := &Server{
 		port: port,
 		orderHdl: transport.NewOrderHandler(
-			orderBusiness,
-			merchantBusiness,
-			userBusiness,
+			composer.OrderBusiness,
+			composer.MerchantBusiness,
+			composer.UserBusiness,
 		),
 	}
 

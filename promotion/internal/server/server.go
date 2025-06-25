@@ -8,11 +8,11 @@ import (
 	"strconv"
 	"time"
 
+	"ztf-backend/promotion/composer"
+	"ztf-backend/promotion/internal/transport"
+
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
-	biz "ztf-backend/promotion/internal/business"
-	"ztf-backend/promotion/internal/repo"
-	"ztf-backend/promotion/internal/transport"
 )
 
 type Server struct {
@@ -28,17 +28,14 @@ func NewServer() *http.Server {
 		fmt.Printf("Error loading .env.%s file: %v\n", appEnv, err)
 	}
 
-	port, _ := strconv.Atoi(os.Getenv("PORT"))
+	port, _ := strconv.Atoi(os.Getenv("PROMOTION_PORT"))
 	log.Printf("Starting server on port %d", port)
 
-	// Dependency injection
-	promotionRepo := repo.NewPromotionRepo()
-	promotionBusiness := biz.NewPromotionBusiness(promotionRepo)
-	promotionHandler := transport.NewPromotionHandler(promotionBusiness)
+	composer := composer.GetComposer()
 
 	NewServer := &Server{
 		port:         port,
-		promotionHdl: promotionHandler,
+		promotionHdl: transport.NewPromotionHandler(composer.PromotionBusiness),
 	}
 
 	// Declare Server config

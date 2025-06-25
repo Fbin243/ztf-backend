@@ -12,6 +12,8 @@ type CreatePromotionInput struct {
 	ExpirationDate time.Time      `json:"expiration_date" validate:"required"`
 	CampaignId     string         `json:"campaign_id"     validate:"required,uuid"`
 	Metadata       map[string]any `json:"metadata"`
+	IsForAll       bool           `json:"is_for_all"`
+	RemainingCount int64          `json:"remaining_count"`
 }
 
 type UpdatePromotionInput struct {
@@ -23,4 +25,6 @@ type UpdatePromotionInput struct {
 	ExpirationDate *time.Time      `json:"expiration_date"`
 	CampaignId     *string         `json:"campaign_id" validate:"omitempty,uuid"`
 	Metadata       *map[string]any `json:"metadata"`
+	IsForAll       *bool           `json:"is_for_all"`
+	RemainingCount *int64          `json:"remaining_count"`
 }

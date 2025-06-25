@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"ztf-backend/order/internal/entity"
-	"ztf-backend/shared/pkg/db"
-	"ztf-backend/shared/pkg/db/base"
+	"ztf-backend/pkg/db"
+	"ztf-backend/pkg/db/base"
 )
 
 type OrderRepo struct {

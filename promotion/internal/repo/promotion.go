@@ -3,9 +3,9 @@ package repo
 import (
 	"log"
 
+	"ztf-backend/pkg/db"
+	"ztf-backend/pkg/db/base"
 	"ztf-backend/promotion/internal/entity"
-	"ztf-backend/shared/pkg/db"
-	"ztf-backend/shared/pkg/db/base"
 )
 
 type PromotionRepo struct {

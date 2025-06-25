@@ -3,11 +3,13 @@ package base
 import (
 	"errors"
 
+	"ztf-backend/pkg/db"
+
+	errs "ztf-backend/pkg/errors"
+
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
-	errs "ztf-backend/shared/errors"
-	"ztf-backend/shared/pkg/db"
 )
 
 type BaseRepo[E IBaseEntity] struct {
@@ -47,18 +49,18 @@ func (r *BaseRepo[E]) FindByIds(ids []string) ([]E, error) {
 }
 
 func (r *BaseRepo[E]) InsertOne(entity *E) (string, error) {
-	lo.FromPtr(entity).SetID(uuid.New().String())
+	lo.FromPtr(entity).SetId(uuid.New().String())
 	if err := r.DB.Create(entity).Error; err != nil {
 		return "", err
 	}
-	return lo.FromPtr(entity).GetID(), nil
+	return lo.FromPtr(entity).GetId(), nil
 }
 
 func (r *BaseRepo[E]) UpdateOne(entity *E) (string, error) {
 	if err := r.DB.Save(entity).Error; err != nil {
 		return "", err
 	}
-	return lo.FromPtr(entity).GetID(), nil
+	return lo.FromPtr(entity).GetId(), nil
 }
 
 func (r *BaseRepo[E]) DeleteOne(id string) (string, error) {

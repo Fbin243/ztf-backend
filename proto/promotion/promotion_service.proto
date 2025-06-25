@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package promotion;
+
+option go_package = "ztf-backend/proto/pb/promotion";
+
+import "promotion/promotion_msg.proto";
+
+service PromotionService {
+  rpc ApplyPromotion(ApplyPromotionRequest) returns (ApplyPromotionResponse);
+  rpc VerifyPromotion(VerifyPromotionRequest) returns (VerifyPromotionResponse);
+}
