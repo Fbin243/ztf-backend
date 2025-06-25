@@ -1,6 +1,6 @@
 package entity
 
-type VerifyPromotionReq struct {
+type ApplyPromotionReq struct {
 	PromotionId     string
 	UserId          string
 	OrderId         string

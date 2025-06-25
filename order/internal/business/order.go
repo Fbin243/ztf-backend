@@ -24,7 +24,7 @@ type IOrderRepo interface {
 }
 
 type IPromotionClient interface {
-	VerifyPromotion(ctx context.Context, req *entity.VerifyPromotionReq) (bool, error)
+	ApplyPromotion(ctx context.Context, req *entity.ApplyPromotionReq) (bool, error)
 }
 
 type OrderBusiness struct {

@@ -4,11 +4,12 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	errs "ztf-backend/pkg/errors"
 	validation "ztf-backend/pkg/validation"
 	biz "ztf-backend/promotion/internal/business"
 	"ztf-backend/promotion/internal/entity"
+
+	"github.com/gin-gonic/gin"
 )
 
 type PromotionHandler struct {
@@ -61,6 +62,12 @@ func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 	id, err := hdl.promotionBusiness.InsertOne(ctx, &promotion)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if promotion.PromotionType == entity.PromotionTypePercentage &&
+		promotion.Value > 100 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Value must be less than 100"})
 		return
 	}
 

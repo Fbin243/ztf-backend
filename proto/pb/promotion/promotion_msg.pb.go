@@ -22,12 +22,14 @@ const (
 )
 
 type ApplyPromotionRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	OrderId       string                 `protobuf:"bytes,2,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	PromotionId   string                 `protobuf:"bytes,3,opt,name=promotion_id,json=promotionId,proto3" json:"promotion_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	PromotionId     string                 `protobuf:"bytes,1,opt,name=promotion_id,json=promotionId,proto3" json:"promotion_id,omitempty"`
+	UserId          string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	OrderId         string                 `protobuf:"bytes,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	Amount          int64                  `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
+	PromotionAmount int64                  `protobuf:"varint,5,opt,name=promotion_amount,json=promotionAmount,proto3" json:"promotion_amount,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *ApplyPromotionRequest) Reset() {
@@ -60,6 +62,13 @@ func (*ApplyPromotionRequest) Descriptor() ([]byte, []int) {
 	return file_promotion_promotion_msg_proto_rawDescGZIP(), []int{0}
 }
 
+func (x *ApplyPromotionRequest) GetPromotionId() string {
+	if x != nil {
+		return x.PromotionId
+	}
+	return ""
+}
+
 func (x *ApplyPromotionRequest) GetUserId() string {
 	if x != nil {
 		return x.UserId
@@ -74,19 +83,25 @@ func (x *ApplyPromotionRequest) GetOrderId() string {
 	return ""
 }
 
-func (x *ApplyPromotionRequest) GetPromotionId() string {
+func (x *ApplyPromotionRequest) GetAmount() int64 {
 	if x != nil {
-		return x.PromotionId
+		return x.Amount
 	}
-	return ""
+	return 0
+}
+
+func (x *ApplyPromotionRequest) GetPromotionAmount() int64 {
+	if x != nil {
+		return x.PromotionAmount
+	}
+	return 0
 }
 
 type ApplyPromotionResponse struct {
-	state          protoimpl.MessageState `protogen:"open.v1"`
-	Success        bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	DiscountAmount int64                  `protobuf:"varint,2,opt,name=discount_amount,json=discountAmount,proto3" json:"discount_amount,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ApplyPromotionResponse) Reset() {
@@ -126,153 +141,19 @@ func (x *ApplyPromotionResponse) GetSuccess() bool {
 	return false
 }
 
-func (x *ApplyPromotionResponse) GetDiscountAmount() int64 {
-	if x != nil {
-		return x.DiscountAmount
-	}
-	return 0
-}
-
-type VerifyPromotionRequest struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	PromotionId     string                 `protobuf:"bytes,1,opt,name=promotion_id,json=promotionId,proto3" json:"promotion_id,omitempty"`
-	UserId          string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	OrderId         string                 `protobuf:"bytes,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
-	Amount          int64                  `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
-	PromotionAmount int64                  `protobuf:"varint,5,opt,name=promotion_amount,json=promotionAmount,proto3" json:"promotion_amount,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
-}
-
-func (x *VerifyPromotionRequest) Reset() {
-	*x = VerifyPromotionRequest{}
-	mi := &file_promotion_promotion_msg_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *VerifyPromotionRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*VerifyPromotionRequest) ProtoMessage() {}
-
-func (x *VerifyPromotionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_promotion_promotion_msg_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use VerifyPromotionRequest.ProtoReflect.Descriptor instead.
-func (*VerifyPromotionRequest) Descriptor() ([]byte, []int) {
-	return file_promotion_promotion_msg_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *VerifyPromotionRequest) GetPromotionId() string {
-	if x != nil {
-		return x.PromotionId
-	}
-	return ""
-}
-
-func (x *VerifyPromotionRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *VerifyPromotionRequest) GetOrderId() string {
-	if x != nil {
-		return x.OrderId
-	}
-	return ""
-}
-
-func (x *VerifyPromotionRequest) GetAmount() int64 {
-	if x != nil {
-		return x.Amount
-	}
-	return 0
-}
-
-func (x *VerifyPromotionRequest) GetPromotionAmount() int64 {
-	if x != nil {
-		return x.PromotionAmount
-	}
-	return 0
-}
-
-type VerifyPromotionResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Verified      bool                   `protobuf:"varint,1,opt,name=verified,proto3" json:"verified,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *VerifyPromotionResponse) Reset() {
-	*x = VerifyPromotionResponse{}
-	mi := &file_promotion_promotion_msg_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *VerifyPromotionResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*VerifyPromotionResponse) ProtoMessage() {}
-
-func (x *VerifyPromotionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_promotion_promotion_msg_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use VerifyPromotionResponse.ProtoReflect.Descriptor instead.
-func (*VerifyPromotionResponse) Descriptor() ([]byte, []int) {
-	return file_promotion_promotion_msg_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *VerifyPromotionResponse) GetVerified() bool {
-	if x != nil {
-		return x.Verified
-	}
-	return false
-}
-
 var File_promotion_promotion_msg_proto protoreflect.FileDescriptor
 
 const file_promotion_promotion_msg_proto_rawDesc = "" +
 	"\n" +
-	"\x1dpromotion/promotion_msg.proto\x12\tpromotion\"n\n" +
-	"\x15ApplyPromotionRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x19\n" +
-	"\border_id\x18\x02 \x01(\tR\aorderId\x12!\n" +
-	"\fpromotion_id\x18\x03 \x01(\tR\vpromotionId\"[\n" +
-	"\x16ApplyPromotionResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\x12'\n" +
-	"\x0fdiscount_amount\x18\x02 \x01(\x03R\x0ediscountAmount\"\xb2\x01\n" +
-	"\x16VerifyPromotionRequest\x12!\n" +
+	"\x1dpromotion/promotion_msg.proto\x12\tpromotion\"\xb1\x01\n" +
+	"\x15ApplyPromotionRequest\x12!\n" +
 	"\fpromotion_id\x18\x01 \x01(\tR\vpromotionId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x19\n" +
 	"\border_id\x18\x03 \x01(\tR\aorderId\x12\x16\n" +
 	"\x06amount\x18\x04 \x01(\x03R\x06amount\x12)\n" +
-	"\x10promotion_amount\x18\x05 \x01(\x03R\x0fpromotionAmount\"5\n" +
-	"\x17VerifyPromotionResponse\x12\x1a\n" +
-	"\bverified\x18\x01 \x01(\bR\bverifiedB Z\x1eztf-backend/proto/pb/promotionb\x06proto3"
+	"\x10promotion_amount\x18\x05 \x01(\x03R\x0fpromotionAmount\"2\n" +
+	"\x16ApplyPromotionResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccessB Z\x1eztf-backend/proto/pb/promotionb\x06proto3"
 
 var (
 	file_promotion_promotion_msg_proto_rawDescOnce sync.Once
@@ -286,12 +167,10 @@ func file_promotion_promotion_msg_proto_rawDescGZIP() []byte {
 	return file_promotion_promotion_msg_proto_rawDescData
 }
 
-var file_promotion_promotion_msg_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_promotion_promotion_msg_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_promotion_promotion_msg_proto_goTypes = []any{
-	(*ApplyPromotionRequest)(nil),   // 0: promotion.ApplyPromotionRequest
-	(*ApplyPromotionResponse)(nil),  // 1: promotion.ApplyPromotionResponse
-	(*VerifyPromotionRequest)(nil),  // 2: promotion.VerifyPromotionRequest
-	(*VerifyPromotionResponse)(nil), // 3: promotion.VerifyPromotionResponse
+	(*ApplyPromotionRequest)(nil),  // 0: promotion.ApplyPromotionRequest
+	(*ApplyPromotionResponse)(nil), // 1: promotion.ApplyPromotionResponse
 }
 var file_promotion_promotion_msg_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -312,7 +191,7 @@ func file_promotion_promotion_msg_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_promotion_promotion_msg_proto_rawDesc), len(file_promotion_promotion_msg_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

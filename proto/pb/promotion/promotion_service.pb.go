@@ -24,24 +24,19 @@ var File_promotion_promotion_service_proto protoreflect.FileDescriptor
 
 const file_promotion_promotion_service_proto_rawDesc = "" +
 	"\n" +
-	"!promotion/promotion_service.proto\x12\tpromotion\x1a\x1dpromotion/promotion_msg.proto2\xc3\x01\n" +
+	"!promotion/promotion_service.proto\x12\tpromotion\x1a\x1dpromotion/promotion_msg.proto2i\n" +
 	"\x10PromotionService\x12U\n" +
-	"\x0eApplyPromotion\x12 .promotion.ApplyPromotionRequest\x1a!.promotion.ApplyPromotionResponse\x12X\n" +
-	"\x0fVerifyPromotion\x12!.promotion.VerifyPromotionRequest\x1a\".promotion.VerifyPromotionResponseB Z\x1eztf-backend/proto/pb/promotionb\x06proto3"
+	"\x0eApplyPromotion\x12 .promotion.ApplyPromotionRequest\x1a!.promotion.ApplyPromotionResponseB Z\x1eztf-backend/proto/pb/promotionb\x06proto3"
 
 var file_promotion_promotion_service_proto_goTypes = []any{
-	(*ApplyPromotionRequest)(nil),   // 0: promotion.ApplyPromotionRequest
-	(*VerifyPromotionRequest)(nil),  // 1: promotion.VerifyPromotionRequest
-	(*ApplyPromotionResponse)(nil),  // 2: promotion.ApplyPromotionResponse
-	(*VerifyPromotionResponse)(nil), // 3: promotion.VerifyPromotionResponse
+	(*ApplyPromotionRequest)(nil),  // 0: promotion.ApplyPromotionRequest
+	(*ApplyPromotionResponse)(nil), // 1: promotion.ApplyPromotionResponse
 }
 var file_promotion_promotion_service_proto_depIdxs = []int32{
 	0, // 0: promotion.PromotionService.ApplyPromotion:input_type -> promotion.ApplyPromotionRequest
-	1, // 1: promotion.PromotionService.VerifyPromotion:input_type -> promotion.VerifyPromotionRequest
-	2, // 2: promotion.PromotionService.ApplyPromotion:output_type -> promotion.ApplyPromotionResponse
-	3, // 3: promotion.PromotionService.VerifyPromotion:output_type -> promotion.VerifyPromotionResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	1, // 1: promotion.PromotionService.ApplyPromotion:output_type -> promotion.ApplyPromotionResponse
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

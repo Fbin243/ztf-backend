@@ -19,8 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PromotionService_ApplyPromotion_FullMethodName  = "/promotion.PromotionService/ApplyPromotion"
-	PromotionService_VerifyPromotion_FullMethodName = "/promotion.PromotionService/VerifyPromotion"
+	PromotionService_ApplyPromotion_FullMethodName = "/promotion.PromotionService/ApplyPromotion"
 )
 
 // PromotionServiceClient is the client API for PromotionService service.
@@ -28,7 +27,6 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PromotionServiceClient interface {
 	ApplyPromotion(ctx context.Context, in *ApplyPromotionRequest, opts ...grpc.CallOption) (*ApplyPromotionResponse, error)
-	VerifyPromotion(ctx context.Context, in *VerifyPromotionRequest, opts ...grpc.CallOption) (*VerifyPromotionResponse, error)
 }
 
 type promotionServiceClient struct {
@@ -49,22 +47,11 @@ func (c *promotionServiceClient) ApplyPromotion(ctx context.Context, in *ApplyPr
 	return out, nil
 }
 
-func (c *promotionServiceClient) VerifyPromotion(ctx context.Context, in *VerifyPromotionRequest, opts ...grpc.CallOption) (*VerifyPromotionResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(VerifyPromotionResponse)
-	err := c.cc.Invoke(ctx, PromotionService_VerifyPromotion_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // PromotionServiceServer is the server API for PromotionService service.
 // All implementations must embed UnimplementedPromotionServiceServer
 // for forward compatibility.
 type PromotionServiceServer interface {
 	ApplyPromotion(context.Context, *ApplyPromotionRequest) (*ApplyPromotionResponse, error)
-	VerifyPromotion(context.Context, *VerifyPromotionRequest) (*VerifyPromotionResponse, error)
 	mustEmbedUnimplementedPromotionServiceServer()
 }
 
@@ -77,9 +64,6 @@ type UnimplementedPromotionServiceServer struct{}
 
 func (UnimplementedPromotionServiceServer) ApplyPromotion(context.Context, *ApplyPromotionRequest) (*ApplyPromotionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ApplyPromotion not implemented")
-}
-func (UnimplementedPromotionServiceServer) VerifyPromotion(context.Context, *VerifyPromotionRequest) (*VerifyPromotionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyPromotion not implemented")
 }
 func (UnimplementedPromotionServiceServer) mustEmbedUnimplementedPromotionServiceServer() {}
 func (UnimplementedPromotionServiceServer) testEmbeddedByValue()                          {}
@@ -120,24 +104,6 @@ func _PromotionService_ApplyPromotion_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PromotionService_VerifyPromotion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyPromotionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PromotionServiceServer).VerifyPromotion(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: PromotionService_VerifyPromotion_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PromotionServiceServer).VerifyPromotion(ctx, req.(*VerifyPromotionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // PromotionService_ServiceDesc is the grpc.ServiceDesc for PromotionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -148,10 +114,6 @@ var PromotionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ApplyPromotion",
 			Handler:    _PromotionService_ApplyPromotion_Handler,
-		},
-		{
-			MethodName: "VerifyPromotion",
-			Handler:    _PromotionService_VerifyPromotion_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

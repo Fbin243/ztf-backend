@@ -23,5 +23,5 @@ func NewUserPromotionRepo(db *gorm.DB) *UserPromotionRepo {
 }
 
 func (r *UserPromotionRepo) WithTx(tx *gorm.DB) biz.IUserPromotionRepo {
-	return NewUserPromotionRepo(tx)
+	return &UserPromotionRepo{tx}
 }

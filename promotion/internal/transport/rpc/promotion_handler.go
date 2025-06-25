@@ -2,6 +2,8 @@ package rpc
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	biz "ztf-backend/promotion/internal/business"
 	"ztf-backend/promotion/internal/entity"
@@ -19,23 +21,27 @@ func NewPromotionHandler(promotionBusiness *biz.PromotionBusiness) *PromotionHan
 	}
 }
 
-func (h *PromotionHandler) VerifyPromotion(
+func (h *PromotionHandler) ApplyPromotion(
 	ctx context.Context,
-	req *promotion.VerifyPromotionRequest,
-) (*promotion.VerifyPromotionResponse, error) {
-	res := &promotion.VerifyPromotionResponse{
-		Verified: false,
+	req *promotion.ApplyPromotionRequest,
+) (*promotion.ApplyPromotionResponse, error) {
+	res := &promotion.ApplyPromotionResponse{
+		Success: false,
 	}
 
-	verified, err := h.promotionBusiness.VerifyPromotion(ctx, &entity.VerifyPromotionReq{
+	success, err := h.promotionBusiness.ApplyPromotion(ctx, &entity.ApplyPromotionReq{
 		PromotionId:     req.PromotionId,
 		UserId:          req.UserId,
 		OrderId:         req.OrderId,
 		Amount:          req.Amount,
 		PromotionAmount: req.PromotionAmount,
 	})
+	if err != nil {
+		return res, fmt.Errorf("failed to apply promotion: %w", err)
+	}
 
-	res.Verified = verified
+	log.Printf("Promotion is applied: %+v", success)
+	res.Success = success
 
-	return res, err
+	return res, nil
 }

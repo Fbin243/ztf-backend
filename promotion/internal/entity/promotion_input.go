@@ -5,7 +5,7 @@ import "time"
 type CreatePromotionInput struct {
 	Code           string         `json:"code"            validate:"required,min=5,max=20"`
 	Name           string         `json:"name"            validate:"required"`
-	Value          float64        `json:"value"           validate:"required"`
+	Value          float64        `json:"value"           validate:"required,min=0"`
 	Description    string         `json:"description"`
 	PromotionType  PromotionType  `json:"promotion_type"  validate:"required,oneof=percentage fixed"`
 	UsageMethod    UsageMethod    `json:"usage_method"    validate:"required,oneof=manual automatic"`

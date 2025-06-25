@@ -65,7 +65,7 @@ func (b *PromotionBusiness) DeleteOne(ctx context.Context, id string) (string, e
 
 func (b *PromotionBusiness) VerifyPromotion(
 	ctx context.Context,
-	req *entity.VerifyPromotionReq,
+	req *entity.ApplyPromotionReq,
 ) (bool, error) {
 	log.Printf("Verifying promotion: %+v", req)
 
@@ -84,6 +84,7 @@ func (b *PromotionBusiness) VerifyPromotion(
 	if promotion.CalculatePromotionAmount(req.Amount) != req.PromotionAmount {
 		return false, errors.New("promotion amount is invalid")
 	}
+	log.Printf("Promotion amount is valid")
 
 	// Check if the promotion belongs to the user
 	if !promotion.IsForAll {
@@ -101,7 +102,7 @@ func (b *PromotionBusiness) VerifyPromotion(
 
 func (b *PromotionBusiness) ApplyPromotion(
 	ctx context.Context,
-	req *entity.VerifyPromotionReq,
+	req *entity.ApplyPromotionReq,
 ) (bool, error) {
 	// Validate the promotion
 	valid, err := b.VerifyPromotion(ctx, req)
@@ -112,15 +113,18 @@ func (b *PromotionBusiness) ApplyPromotion(
 		return false, errors.New("promotion is invalid")
 	}
 
+	log.Printf("Promotion is valid")
+
 	// Apply the promotion
 	promotion, err := b.promotionRepo.FindById(ctx, req.PromotionId)
 	if err != nil {
 		return false, err
 	}
 
+	log.Printf("Promotion: %+v", promotion)
 	if promotion.IsForAll {
 		// - Make a transaction
-		db.GetDB().Transaction(func(tx *gorm.DB) error {
+		err := db.GetDB().Transaction(func(tx *gorm.DB) error {
 			// -- Check if the promotion is used by the user
 			userPromotion, err := b.userPromotionRepo.WithTx(tx).FindByUserIdAndPromotionId(ctx, req.UserId, req.PromotionId)
 			if err == errs.ErrorNotFound {
@@ -148,12 +152,19 @@ func (b *PromotionBusiness) ApplyPromotion(
 				UserId:      req.UserId,
 				PromotionId: req.PromotionId,
 			})
+			if errors.Is(err, errs.ErrorNoRowsAffected) {
+				return errors.New("promotion already used max times")
+			}
 			if err != nil {
 				return err
 			}
 
 			return nil
 		})
+		if err != nil {
+			return false, err
+		}
+
 	} else {
 		// - Mark as used
 		err = b.userPromotionRepo.MarkAsUsed(ctx, &entity.MarkAsUsedReq{

@@ -17,13 +17,13 @@ func NewPromotionClient(promotionClient promotion.PromotionServiceClient) *Promo
 	}
 }
 
-func (c *PromotionClient) VerifyPromotion(
+func (c *PromotionClient) ApplyPromotion(
 	ctx context.Context,
-	req *entity.VerifyPromotionReq,
+	req *entity.ApplyPromotionReq,
 ) (bool, error) {
-	response, err := c.PromotionServiceClient.VerifyPromotion(
+	response, err := c.PromotionServiceClient.ApplyPromotion(
 		ctx,
-		&promotion.VerifyPromotionRequest{
+		&promotion.ApplyPromotionRequest{
 			PromotionId:     req.PromotionId,
 			UserId:          req.UserId,
 			OrderId:         req.OrderId,
@@ -35,5 +35,5 @@ func (c *PromotionClient) VerifyPromotion(
 		return false, err
 	}
 
-	return response.Verified, nil
+	return response.Success, nil
 }

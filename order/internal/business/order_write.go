@@ -3,11 +3,13 @@ package biz
 import (
 	"context"
 	"errors"
+	"log"
 
-	"github.com/jinzhu/copier"
 	"ztf-backend/order/internal/entity"
 	"ztf-backend/pkg/db/base"
 	errs "ztf-backend/pkg/errors"
+
+	"github.com/jinzhu/copier"
 )
 
 func (b *OrderBusiness) InsertOne(
@@ -96,9 +98,9 @@ func (b *OrderBusiness) PayForOrder(
 		return "", errs.ErrorNotFound
 	}
 
-	// Verify the promotion
+	// Apply the promotion
 	if input.PromotionId != nil {
-		verified, err := b.promotionClient.VerifyPromotion(ctx, &entity.VerifyPromotionReq{
+		success, err := b.promotionClient.ApplyPromotion(ctx, &entity.ApplyPromotionReq{
 			PromotionId:     *input.PromotionId,
 			UserId:          input.UserId,
 			OrderId:         id,
@@ -108,12 +110,14 @@ func (b *OrderBusiness) PayForOrder(
 		if err != nil {
 			return "", err
 		}
-		if !verified {
-			return "", errors.New("promotion is not valid")
+		if !success {
+			return "", errors.New("promotion is not applied")
 		}
 	} else if input.PromotionAmount != 0 {
 		return "", errors.New("missing promotion id")
 	}
+
+	log.Printf("Promotion is applied")
 
 	// Pay for the order
 	order.UserId = &input.UserId
