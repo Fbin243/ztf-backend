@@ -19,7 +19,10 @@ func NewPromotionHandler(promotionBusiness *biz.PromotionBusiness) *PromotionHan
 	}
 }
 
-func (h *PromotionHandler) VerifyPromotion(ctx context.Context, req *promotion.VerifyPromotionRequest) (*promotion.VerifyPromotionResponse, error) {
+func (h *PromotionHandler) VerifyPromotion(
+	ctx context.Context,
+	req *promotion.VerifyPromotionRequest,
+) (*promotion.VerifyPromotionResponse, error) {
 	res := &promotion.VerifyPromotionResponse{
 		Verified: false,
 	}

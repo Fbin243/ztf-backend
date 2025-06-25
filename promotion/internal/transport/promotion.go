@@ -4,12 +4,11 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	errs "ztf-backend/pkg/errors"
 	validation "ztf-backend/pkg/validation"
 	biz "ztf-backend/promotion/internal/business"
 	"ztf-backend/promotion/internal/entity"
-
-	"github.com/gin-gonic/gin"
 )
 
 type PromotionHandler struct {

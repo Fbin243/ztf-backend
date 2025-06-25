@@ -14,7 +14,10 @@ func (b *OrderBusiness) FindById(ctx context.Context, id string) (*entity.Order,
 	return b.orderRepo.FindById(ctx, id)
 }
 
-func (b *OrderBusiness) FindByIdWithMerchantAndUser(ctx context.Context, id string) (*entity.Order, error) {
+func (b *OrderBusiness) FindByIdWithMerchantAndUser(
+	ctx context.Context,
+	id string,
+) (*entity.Order, error) {
 	order, err := b.orderRepo.FindByIdWithMerchantAndUser(ctx, id)
 	if err != nil {
 		return nil, err

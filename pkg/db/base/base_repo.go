@@ -4,13 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"ztf-backend/pkg/db"
-
-	errs "ztf-backend/pkg/errors"
-
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
+	"ztf-backend/pkg/db"
+	errs "ztf-backend/pkg/errors"
 )
 
 type BaseRepo[E IBaseEntity] struct {

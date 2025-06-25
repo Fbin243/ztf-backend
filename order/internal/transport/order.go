@@ -3,14 +3,14 @@ package transport
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+	"github.com/samber/lo"
 	biz "ztf-backend/order/internal/business"
 	"ztf-backend/order/internal/entity"
 	"ztf-backend/order/internal/transport/dto"
 	errs "ztf-backend/pkg/errors"
-
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
-	"github.com/samber/lo"
+	"ztf-backend/pkg/validation"
 )
 
 type OrderHandler struct {
@@ -127,7 +127,7 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 		return
 	}
 
-	err := GetValidator().Struct(order)
+	err := validation.GetValidator().Struct(order)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -150,7 +150,7 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 		return
 	}
 
-	err := GetValidator().Struct(order)
+	err := validation.GetValidator().Struct(order)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -184,7 +184,7 @@ func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
 		return
 	}
 
-	err := GetValidator().Struct(input)
+	err := validation.GetValidator().Struct(input)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

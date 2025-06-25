@@ -3,10 +3,9 @@ package repo
 import (
 	"log"
 
+	"gorm.io/gorm"
 	"ztf-backend/pkg/db"
 	"ztf-backend/promotion/internal/entity"
-
-	"gorm.io/gorm"
 )
 
 type UserPromotionRepo struct {

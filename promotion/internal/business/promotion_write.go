@@ -6,14 +6,16 @@ import (
 	"log"
 	"time"
 
+	"github.com/jinzhu/copier"
 	"ztf-backend/pkg/db/base"
 	errs "ztf-backend/pkg/errors"
 	"ztf-backend/promotion/internal/entity"
-
-	"github.com/jinzhu/copier"
 )
 
-func (b *PromotionBusiness) InsertOne(ctx context.Context, input *entity.CreatePromotionInput) (string, error) {
+func (b *PromotionBusiness) InsertOne(
+	ctx context.Context,
+	input *entity.CreatePromotionInput,
+) (string, error) {
 	newPromotion := &entity.Promotion{
 		BaseEntity: &base.BaseEntity{},
 	}
@@ -58,7 +60,10 @@ func (b *PromotionBusiness) DeleteOne(ctx context.Context, id string) (string, e
 	return b.promotionRepo.DeleteOne(ctx, id)
 }
 
-func (b *PromotionBusiness) VerifyPromotion(ctx context.Context, req *entity.VerifyPromotionReq) (bool, error) {
+func (b *PromotionBusiness) VerifyPromotion(
+	ctx context.Context,
+	req *entity.VerifyPromotionReq,
+) (bool, error) {
 	log.Printf("Verifying promotion: %+v", req)
 
 	// Check if the promotion exists
@@ -84,7 +89,10 @@ func (b *PromotionBusiness) VerifyPromotion(ctx context.Context, req *entity.Ver
 	return true, nil
 }
 
-func (b *PromotionBusiness) ApplyPromotion(ctx context.Context, req *entity.VerifyPromotionReq) (bool, error) {
+func (b *PromotionBusiness) ApplyPromotion(
+	ctx context.Context,
+	req *entity.VerifyPromotionReq,
+) (bool, error) {
 	// Validate the promotion
 	valid, err := b.VerifyPromotion(ctx, req)
 	if err != nil {

@@ -17,14 +17,20 @@ func NewPromotionClient(promotionClient promotion.PromotionServiceClient) *Promo
 	}
 }
 
-func (c *PromotionClient) VerifyPromotion(ctx context.Context, req *entity.VerifyPromotionReq) (bool, error) {
-	response, err := c.PromotionServiceClient.VerifyPromotion(ctx, &promotion.VerifyPromotionRequest{
-		PromotionId:     req.PromotionId,
-		UserId:          req.UserId,
-		OrderId:         req.OrderId,
-		Amount:          req.Amount,
-		PromotionAmount: req.PromotionAmount,
-	})
+func (c *PromotionClient) VerifyPromotion(
+	ctx context.Context,
+	req *entity.VerifyPromotionReq,
+) (bool, error) {
+	response, err := c.PromotionServiceClient.VerifyPromotion(
+		ctx,
+		&promotion.VerifyPromotionRequest{
+			PromotionId:     req.PromotionId,
+			UserId:          req.UserId,
+			OrderId:         req.OrderId,
+			Amount:          req.Amount,
+			PromotionAmount: req.PromotionAmount,
+		},
+	)
 	if err != nil {
 		return false, err
 	}

@@ -4,14 +4,16 @@ import (
 	"context"
 	"errors"
 
+	"github.com/jinzhu/copier"
 	"ztf-backend/order/internal/entity"
 	"ztf-backend/pkg/db/base"
 	errs "ztf-backend/pkg/errors"
-
-	"github.com/jinzhu/copier"
 )
 
-func (b *OrderBusiness) InsertOne(ctx context.Context, input *entity.CreateOrderInput) (string, error) {
+func (b *OrderBusiness) InsertOne(
+	ctx context.Context,
+	input *entity.CreateOrderInput,
+) (string, error) {
 	// Check if the merchant exists
 	exists, err := b.merchantRepo.Exists(ctx, input.MerchantId)
 	if err != nil {
@@ -32,7 +34,11 @@ func (b *OrderBusiness) InsertOne(ctx context.Context, input *entity.CreateOrder
 	return b.orderRepo.InsertOne(ctx, newOrder)
 }
 
-func (b *OrderBusiness) UpdateOne(ctx context.Context, id string, input *entity.UpdateOrderInput) (string, error) {
+func (b *OrderBusiness) UpdateOne(
+	ctx context.Context,
+	id string,
+	input *entity.UpdateOrderInput,
+) (string, error) {
 	// Get the existing order
 	existingOrder, err := b.orderRepo.FindById(ctx, id)
 	if err != nil {
@@ -60,7 +66,11 @@ func (b *OrderBusiness) DeleteOne(ctx context.Context, id string) (string, error
 	return b.orderRepo.DeleteOne(ctx, id)
 }
 
-func (b *OrderBusiness) PayForOrder(ctx context.Context, id string, input *entity.PayOrderInput) (string, error) {
+func (b *OrderBusiness) PayForOrder(
+	ctx context.Context,
+	id string,
+	input *entity.PayOrderInput,
+) (string, error) {
 	// Check if the order exists
 	order, err := b.orderRepo.FindById(ctx, id)
 	if err != nil {

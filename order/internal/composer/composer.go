@@ -1,12 +1,12 @@
 package composer
 
 import (
+	"log"
 	"sync"
 
+	"google.golang.org/grpc"
 	biz "ztf-backend/order/internal/business"
 	"ztf-backend/order/internal/repo"
-
-	"google.golang.org/grpc"
 )
 
 type Composer struct {
@@ -56,6 +56,9 @@ func GetComposer() *Composer {
 
 func (c *Composer) Close() {
 	if c.PromotionConn != nil {
-		c.PromotionConn.Close()
+		err := c.PromotionConn.Close()
+		if err != nil {
+			log.Printf("Error closing promotion connection: %v", err)
+		}
 	}
 }
