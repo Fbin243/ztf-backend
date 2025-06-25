@@ -24,5 +24,5 @@ func NewPromotionRepo(db *gorm.DB) *PromotionRepo {
 }
 
 func (r *PromotionRepo) WithTx(tx *gorm.DB) biz.IPromotionRepo {
-	return NewPromotionRepo(tx)
+	return &PromotionRepo{base.NewBaseRepo[entity.Promotion](tx)}
 }

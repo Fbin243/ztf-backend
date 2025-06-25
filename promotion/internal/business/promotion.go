@@ -13,6 +13,7 @@ type IPromotionRepo interface {
 	base.IBaseRepo[entity.Promotion]
 	WithTx(tx *gorm.DB) IPromotionRepo
 	UpdateRemainingCount(ctx context.Context, id string) error
+	FindByCode(ctx context.Context, code string) (*entity.Promotion, error)
 }
 
 type IUserPromotionRepo interface {

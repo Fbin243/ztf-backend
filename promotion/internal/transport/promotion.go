@@ -45,6 +45,19 @@ func (hdl *PromotionHandler) GetPromotionById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, promotion)
 }
 
+func (hdl *PromotionHandler) GetPromotionByCode(ctx *gin.Context) {
+	code := ctx.Query("code")
+	promotion, err := hdl.promotionBusiness.FindByCode(ctx, code)
+	if errors.Is(err, errs.ErrorNotFound) {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	} else if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(http.StatusOK, promotion)
+}
+
 func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 	var promotion entity.CreatePromotionInput
 	if err := ctx.ShouldBindJSON(&promotion); err != nil {

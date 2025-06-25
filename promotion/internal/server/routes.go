@@ -19,6 +19,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	// promotion routes
 	r.GET("/api/v1/promotions", s.promotionHdl.GetAllPromotions)
+	r.GET("/api/v1/promotions/search", s.promotionHdl.GetPromotionByCode)
 	r.GET("/api/v1/promotions/:id", s.promotionHdl.GetPromotionById)
 	r.POST("/api/v1/promotions", s.promotionHdl.CreatePromotion)
 	r.PUT("/api/v1/promotions/:id", s.promotionHdl.UpdatePromotion)
