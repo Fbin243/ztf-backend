@@ -27,6 +27,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.GET("/metrics", middleware.PrometheusHandler())
 	r.Use(middleware.RequestMetricsMiddleware())
 
+	r.Use(middleware.AuthMiddleware())
+
 	// order routes
 	r.GET("/api/v1/orders", s.orderHdl.GetAllOrders)
 	r.GET("/api/v1/orders/:id", s.orderHdl.GetOrderById)

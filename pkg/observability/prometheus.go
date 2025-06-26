@@ -1,6 +1,8 @@
 package observability
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"github.com/prometheus/client_golang/prometheus"
+)
 
 // Define metrics
 var (
@@ -20,5 +22,9 @@ var CustomRegistry = prometheus.NewRegistry()
 
 // Register metrics with custom registry
 func init() {
-	CustomRegistry.MustRegister(HttpRequestTotal, HttpRequestErrorTotal)
+	CustomRegistry.MustRegister(
+		prometheus.NewGoCollector(),
+		prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}),
+		HttpRequestTotal,
+		HttpRequestErrorTotal)
 }

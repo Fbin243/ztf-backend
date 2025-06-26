@@ -19,8 +19,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true, // Enable cookies/auth
 	}))
 
-	r.Use(middleware.AuthMiddleware())
-
 	// promotion routes
 	r.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
@@ -29,6 +27,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Register /metrics before middleware to avoid couting the request from prometheus to /metrics
 	r.GET("/metrics", middleware.PrometheusHandler())
 	r.Use(middleware.RequestMetricsMiddleware())
+
+	r.Use(middleware.AuthMiddleware())
 
 	r.GET("/api/v1/promotions", s.promotionHdl.GetAllPromotions)
 	r.GET("/api/v1/promotions/search", s.promotionHdl.GetPromotionByCode)

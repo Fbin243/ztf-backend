@@ -5,7 +5,7 @@ all: build test
 
 build:
 	@echo "Building..."
-	@go build -o tmp/main ${SERVICE}/cmd/api/main.go
+	@go build -o tmp/${SERVICE} ./services/${SERVICE}/cmd/api
 
 # Run the application
 run:
@@ -59,5 +59,11 @@ protoc:
 	--go_out=./proto/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./proto/pb --go-grpc_opt=paths=source_relative \
 	{} \;
+
+up:
+	@COMPOSE_BAKE=true docker compose -f docker-compose.dev.yml up -d --build
+
+down:
+	@docker compose -f docker-compose.dev.yml down
 
 .PHONY: all build run test clean watch lint order promotion protoc

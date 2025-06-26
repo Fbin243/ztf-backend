@@ -1,0 +1,70 @@
+x-common-config: &common-config
+  env_file:
+    - .env.dev
+  networks:
+    - ztf-network
+  restart: on-failure:2
+
+x-common-healthcheck: &common-healthcheck
+  start_period: 5s
+  interval: 5s
+  timeout: 3s
+  retries: 5
+
+services:
+  order:
+    <<: *common-config
+    container_name: ztf-order
+    build:
+      context: .
+      dockerfile: ./services/order/Dockerfile
+    image: ztf-order:latest
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      <<: *common-healthcheck
+
+  promotion:
+    <<: *common-config
+    container_name: ztf-promotion
+    build:
+      context: .
+      dockerfile: ./services/promotion/Dockerfile
+    image: ztf-promotion:latest
+    ports:
+      - 8081:8081
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
+      <<: *common-healthcheck
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v2.55.0
+    volumes:
+      - ./docker/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - ztf-network
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:11.3.0
+    volumes:
+      - ./docker/grafana.yml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - grafana-data:/var/lib/grafana
+    ports:
+      - 3000:3000
+    networks:
+      - ztf-network
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+
+volumes:
+  grafana-data:
+
+networks:
+  ztf-network:
+    driver: bridge
