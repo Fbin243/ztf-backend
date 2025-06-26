@@ -3,8 +3,8 @@ package rpc
 import (
 	"context"
 
-	"ztf-backend/services/promotion/internal/entity"
 	"ztf-backend/proto/pb/order"
+	"ztf-backend/services/promotion/internal/entity"
 )
 
 type OrderClient struct {

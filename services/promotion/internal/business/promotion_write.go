@@ -6,13 +6,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/jinzhu/copier"
+	"gorm.io/gorm"
 	"ztf-backend/pkg/db"
 	"ztf-backend/pkg/db/base"
 	errs "ztf-backend/pkg/errors"
 	"ztf-backend/services/promotion/internal/entity"
-
-	"github.com/jinzhu/copier"
-	"gorm.io/gorm"
 )
 
 func (b *PromotionBusiness) InsertOne(
@@ -50,7 +49,11 @@ func (b *PromotionBusiness) UpdateOne(
 	return b.promotionRepo.UpdateOne(ctx, existingPromotion)
 }
 
-func (b *PromotionBusiness) CollectPromotion(ctx context.Context, userId string, promotionId string) (bool, error) {
+func (b *PromotionBusiness) CollectPromotion(
+	ctx context.Context,
+	userId string,
+	promotionId string,
+) (bool, error) {
 	// Check if the promotion exists and its type is not for all
 	promotion, err := b.promotionRepo.FindById(ctx, promotionId)
 	if err != nil {
@@ -187,8 +190,9 @@ func (b *PromotionBusiness) ApplyPromotion(
 		// - Make a transaction
 		err := db.GetDB().Transaction(func(tx *gorm.DB) error {
 			// -- Check if the promotion is used by the user
-			userPromotion, err := b.userPromotionRepo.WithTx(tx).FindByUserIdAndPromotionId(ctx, req.UserId, req.PromotionId)
-			if err == errs.ErrorNotFound {
+			userPromotion, err := b.userPromotionRepo.WithTx(tx).
+				FindByUserIdAndPromotionId(ctx, req.UserId, req.PromotionId)
+			if errors.Is(err, errs.ErrorNotFound) {
 				userPromotion = &entity.UserPromotion{
 					UserId:      req.UserId,
 					PromotionId: req.PromotionId,
@@ -225,7 +229,6 @@ func (b *PromotionBusiness) ApplyPromotion(
 		if err != nil {
 			return false, err
 		}
-
 	} else {
 		// - Mark as used
 		err = b.userPromotionRepo.MarkAsUsed(ctx, &entity.MarkAsUsedReq{

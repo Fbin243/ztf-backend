@@ -1,13 +1,12 @@
-package repo
+package tidb
 
 import (
 	"log"
 
+	"gorm.io/gorm"
 	"ztf-backend/pkg/db/base"
 	biz "ztf-backend/services/order/internal/business"
 	"ztf-backend/services/order/internal/entity"
-
-	"gorm.io/gorm"
 )
 
 type OrderRepo struct {

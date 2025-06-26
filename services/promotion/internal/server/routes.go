@@ -3,10 +3,9 @@ package server
 import (
 	"net/http"
 
-	"ztf-backend/pkg/middleware"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"ztf-backend/pkg/middleware"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {

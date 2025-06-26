@@ -1,10 +1,9 @@
-package repo
+package tidb
 
 import (
+	"gorm.io/gorm"
 	"ztf-backend/pkg/db/base"
 	"ztf-backend/services/order/internal/entity"
-
-	"gorm.io/gorm"
 )
 
 type MerchantRepo struct {

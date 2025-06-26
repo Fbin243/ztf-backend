@@ -1,16 +1,18 @@
-package repo
+package tidb
 
 import (
 	"context"
 	"time"
 
+	"gorm.io/gorm"
 	"ztf-backend/pkg/errors"
 	"ztf-backend/services/promotion/internal/entity"
-
-	"gorm.io/gorm"
 )
 
-func (r *UserPromotionRepo) UpsertOne(ctx context.Context, userPromotion *entity.UserPromotion) (string, string, error) {
+func (r *UserPromotionRepo) UpsertOne(
+	ctx context.Context,
+	userPromotion *entity.UserPromotion,
+) (string, string, error) {
 	err := r.WithContext(ctx).Save(userPromotion).Error
 	if err != nil {
 		return "", "", err
@@ -18,8 +20,14 @@ func (r *UserPromotionRepo) UpsertOne(ctx context.Context, userPromotion *entity
 	return userPromotion.UserId, userPromotion.PromotionId, nil
 }
 
-func (r *UserPromotionRepo) DeleteOne(ctx context.Context, userId string, promotionId string) (string, string, error) {
-	err := r.WithContext(ctx).Delete(&entity.UserPromotion{}, "user_id = ? AND promotion_id = ?", userId, promotionId).Error
+func (r *UserPromotionRepo) DeleteOne(
+	ctx context.Context,
+	userId string,
+	promotionId string,
+) (string, string, error) {
+	err := r.WithContext(ctx).
+		Delete(&entity.UserPromotion{}, "user_id = ? AND promotion_id = ?", userId, promotionId).
+		Error
 	if err != nil {
 		return "", "", err
 	}

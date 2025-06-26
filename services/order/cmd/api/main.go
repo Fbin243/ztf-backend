@@ -11,12 +11,11 @@ import (
 	"syscall"
 	"time"
 
+	"google.golang.org/grpc"
 	"ztf-backend/proto/pb/order"
 	"ztf-backend/services/order/internal/composer"
 	"ztf-backend/services/order/internal/server"
 	"ztf-backend/services/order/internal/transport/rpc"
-
-	"google.golang.org/grpc"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {

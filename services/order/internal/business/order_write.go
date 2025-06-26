@@ -5,11 +5,10 @@ import (
 	"errors"
 	"log"
 
+	"github.com/jinzhu/copier"
 	"ztf-backend/pkg/db/base"
 	errs "ztf-backend/pkg/errors"
 	"ztf-backend/services/order/internal/entity"
-
-	"github.com/jinzhu/copier"
 )
 
 func (b *OrderBusiness) InsertOne(

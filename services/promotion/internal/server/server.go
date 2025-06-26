@@ -8,16 +8,15 @@ import (
 	"strconv"
 	"time"
 
-	"ztf-backend/services/promotion/internal/composer"
-	"ztf-backend/services/promotion/internal/transport"
-
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
+	"ztf-backend/services/promotion/internal/composer"
+	"ztf-backend/services/promotion/internal/transport/rest"
 )
 
 type Server struct {
 	port         int
-	promotionHdl *transport.PromotionHandler
+	promotionHdl *rest.PromotionHandler
 }
 
 func NewServer() *http.Server {
@@ -35,7 +34,7 @@ func NewServer() *http.Server {
 
 	NewServer := &Server{
 		port:         port,
-		promotionHdl: transport.NewPromotionHandler(composer.PromotionBusiness),
+		promotionHdl: rest.NewPromotionHandler(composer.PromotionBusiness),
 	}
 
 	// Declare Server config

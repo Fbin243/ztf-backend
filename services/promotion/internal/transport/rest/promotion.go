@@ -1,15 +1,14 @@
-package transport
+package rest
 
 import (
 	"errors"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	errs "ztf-backend/pkg/errors"
 	validation "ztf-backend/pkg/validation"
 	biz "ztf-backend/services/promotion/internal/business"
 	"ztf-backend/services/promotion/internal/entity"
-
-	"github.com/gin-gonic/gin"
 )
 
 type PromotionHandler struct {

@@ -14,6 +14,9 @@ func (b *PromotionBusiness) FindById(ctx context.Context, id string) (*entity.Pr
 	return b.promotionRepo.FindById(ctx, id)
 }
 
-func (b *PromotionBusiness) FindByCode(ctx context.Context, code string) (*entity.Promotion, error) {
+func (b *PromotionBusiness) FindByCode(
+	ctx context.Context,
+	code string,
+) (*entity.Promotion, error) {
 	return b.promotionRepo.FindByCode(ctx, code)
 }

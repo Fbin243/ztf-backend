@@ -4,11 +4,10 @@ import (
 	"log"
 	"os"
 
-	"ztf-backend/proto/pb/order"
-	"ztf-backend/services/promotion/internal/repo/rpc"
-
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"ztf-backend/proto/pb/order"
+	"ztf-backend/services/promotion/internal/repo/rpc"
 )
 
 func ComposeOrderClient() (*rpc.OrderClient, *grpc.ClientConn) {

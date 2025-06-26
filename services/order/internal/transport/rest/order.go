@@ -1,17 +1,16 @@
-package transport
+package rest
 
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+	"github.com/samber/lo"
 	errs "ztf-backend/pkg/errors"
 	"ztf-backend/pkg/validation"
 	biz "ztf-backend/services/order/internal/business"
 	"ztf-backend/services/order/internal/entity"
 	"ztf-backend/services/order/internal/transport/dto"
-
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
-	"github.com/samber/lo"
 )
 
 type OrderHandler struct {

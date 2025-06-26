@@ -1,12 +1,11 @@
-package repo
+package tidb
 
 import (
 	"context"
 
+	"gorm.io/gorm"
 	"ztf-backend/pkg/errors"
 	"ztf-backend/services/promotion/internal/entity"
-
-	"gorm.io/gorm"
 )
 
 func (r *PromotionRepo) UpdateRemainingCount(ctx context.Context, id string) error {

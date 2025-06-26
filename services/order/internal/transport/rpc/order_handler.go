@@ -18,7 +18,10 @@ func NewOrderHandler(userBusiness *biz.UserBusiness) *OrderHandler {
 	}
 }
 
-func (h *OrderHandler) ValidateUser(ctx context.Context, req *order.ValidateUserRequest) (*order.ValidateUserResponse, error) {
+func (h *OrderHandler) ValidateUser(
+	ctx context.Context,
+	req *order.ValidateUserRequest,
+) (*order.ValidateUserResponse, error) {
 	valid, err := h.userBusiness.ValidateUser(ctx, req.UserId)
 	if err != nil {
 		return nil, err

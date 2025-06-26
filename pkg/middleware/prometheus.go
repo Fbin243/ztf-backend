@@ -3,10 +3,9 @@ package middleware
 import (
 	"strconv"
 
-	"ztf-backend/pkg/observability"
-
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"ztf-backend/pkg/observability"
 )
 
 // Custom metrics handler with custom registry

@@ -8,16 +8,15 @@ import (
 	"strconv"
 	"time"
 
-	"ztf-backend/services/order/internal/composer"
-	"ztf-backend/services/order/internal/transport"
-
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
+	"ztf-backend/services/order/internal/composer"
+	"ztf-backend/services/order/internal/transport/rest"
 )
 
 type Server struct {
 	port     int
-	orderHdl *transport.OrderHandler
+	orderHdl *rest.OrderHandler
 }
 
 func NewServer() *http.Server {
@@ -34,7 +33,7 @@ func NewServer() *http.Server {
 	composer := composer.GetComposer()
 	NewServer := &Server{
 		port: port,
-		orderHdl: transport.NewOrderHandler(
+		orderHdl: rest.NewOrderHandler(
 			composer.OrderBusiness,
 			composer.MerchantBusiness,
 			composer.UserBusiness,
