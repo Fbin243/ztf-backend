@@ -3,6 +3,8 @@ package server
 import (
 	"net/http"
 
+	"ztf-backend/pkg/middleware"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -16,6 +18,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowHeaders:     []string{"Accept", "Authorization", "Content-Type", "X-User-Id"},
 		AllowCredentials: true, // Enable cookies/auth
 	}))
+
+	// Register /metrics before middleware to avoid couting the request from prometheus to /metrics
+	r.GET("/metrics", middleware.PrometheusHandler())
+	r.Use(middleware.RequestMetricsMiddleware())
 
 	// order routes
 	r.GET("/api/v1/orders/health", func(ctx *gin.Context) {
