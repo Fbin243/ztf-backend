@@ -50,6 +50,67 @@ func (b *PromotionBusiness) UpdateOne(
 	return b.promotionRepo.UpdateOne(ctx, existingPromotion)
 }
 
+func (b *PromotionBusiness) CollectPromotion(ctx context.Context, userId string, promotionId string) (bool, error) {
+	// Check if the promotion exists and its type is not for all
+	promotion, err := b.promotionRepo.FindById(ctx, promotionId)
+	if err != nil {
+		return false, err
+	}
+	if promotion.IsForAll {
+		return false, errors.New("promotion is for all")
+	}
+
+	// Check if the promotion is expired
+	if promotion.ExpirationDate.Before(time.Now()) {
+		return false, errors.New("promotion is expired")
+	}
+
+	// Check if user exists
+	valid, err := b.orderClient.ValidateUser(ctx, &entity.ValidateUserReq{
+		UserId: userId,
+	})
+	if err != nil {
+		return false, err
+	}
+	if !valid {
+		return false, errors.New("user is not valid")
+	}
+
+	// Check if the promotion is already collected by the user
+	exists, err := b.userPromotionRepo.Exists(ctx, userId, promotionId)
+	if err != nil {
+		return false, err
+	}
+	if exists {
+		return false, errors.New("promotion is already collected")
+	}
+
+	// Collect the promotion
+	err = db.GetDB().Transaction(func(tx *gorm.DB) error {
+		// - Reduce the remaining_count in promotion by 1
+		err = b.promotionRepo.WithTx(tx).UpdateRemainingCount(ctx, promotionId)
+		if err != nil {
+			return err
+		}
+
+		// - Insert a new user_promotion
+		_, _, err = b.userPromotionRepo.WithTx(tx).UpsertOne(ctx, &entity.UserPromotion{
+			UserId:      userId,
+			PromotionId: promotionId,
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return false, errors.New("failed to collect promotion: " + err.Error())
+	}
+
+	return true, nil
+}
+
 func (b *PromotionBusiness) DeleteOne(ctx context.Context, id string) (string, error) {
 	// Check if the promotion exists
 	exists, err := b.promotionRepo.Exists(ctx, id)

@@ -3,3 +3,11 @@ syntax = "proto3";
 package promotion;
 
 option go_package = "ztf-backend/proto/pb/order";
+
+message ValidateUserRequest {
+  string user_id = 1;
+}
+
+message ValidateUserResponse {
+  bool valid = 1;
+}

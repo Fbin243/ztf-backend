@@ -24,13 +24,19 @@ var File_order_order_service_proto protoreflect.FileDescriptor
 
 const file_order_order_service_proto_rawDesc = "" +
 	"\n" +
-	"\x19order/order_service.proto\x12\tpromotion2\x0e\n" +
-	"\fOrderServiceB\x1cZ\x1aztf-backend/proto/pb/orderb\x06proto3"
+	"\x19order/order_service.proto\x12\tpromotion\x1a\x15order/order_msg.proto2_\n" +
+	"\fOrderService\x12O\n" +
+	"\fValidateUser\x12\x1e.promotion.ValidateUserRequest\x1a\x1f.promotion.ValidateUserResponseB\x1cZ\x1aztf-backend/proto/pb/orderb\x06proto3"
 
-var file_order_order_service_proto_goTypes = []any{}
+var file_order_order_service_proto_goTypes = []any{
+	(*ValidateUserRequest)(nil),  // 0: promotion.ValidateUserRequest
+	(*ValidateUserResponse)(nil), // 1: promotion.ValidateUserResponse
+}
 var file_order_order_service_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
+	0, // 0: promotion.OrderService.ValidateUser:input_type -> promotion.ValidateUserRequest
+	1, // 1: promotion.OrderService.ValidateUser:output_type -> promotion.ValidateUserResponse
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -41,6 +47,7 @@ func file_order_order_service_proto_init() {
 	if File_order_order_service_proto != nil {
 		return
 	}
+	file_order_order_msg_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

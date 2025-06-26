@@ -121,3 +121,31 @@ func (hdl *PromotionHandler) DeletePromotion(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, gin.H{"id": id})
 }
+
+func (hdl *PromotionHandler) VerifyPromotion(ctx *gin.Context) {
+	req := &entity.ApplyPromotionReq{}
+	if err := ctx.ShouldBindJSON(req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	valid, err := hdl.promotionBusiness.VerifyPromotion(ctx, req)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"valid": valid})
+}
+
+func (hdl *PromotionHandler) CollectPromotion(ctx *gin.Context) {
+	userID := ctx.GetHeader("X-User-Id")
+	promotionID := ctx.Param("id")
+
+	collected, err := hdl.promotionBusiness.CollectPromotion(ctx, userID, promotionID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"success": collected})
+}

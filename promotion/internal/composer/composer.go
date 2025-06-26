@@ -6,11 +6,16 @@ import (
 	"ztf-backend/pkg/db"
 	biz "ztf-backend/promotion/internal/business"
 	"ztf-backend/promotion/internal/repo"
+	"ztf-backend/promotion/internal/repo/rpc"
+
+	"google.golang.org/grpc"
 )
 
 type Composer struct {
 	PromotionRepo     biz.IPromotionRepo
 	UserPromotionRepo biz.IUserPromotionRepo
+	OrderClient       *rpc.OrderClient
+	OrderConn         *grpc.ClientConn
 
 	PromotionBusiness *biz.PromotionBusiness
 }
@@ -25,16 +30,25 @@ func GetComposer() *Composer {
 		db := db.GetDB()
 		promotionRepo := repo.NewPromotionRepo(db)
 		userPromotionRepo := repo.NewUserPromotionRepo(db)
+		orderClient, conn := ComposeOrderClient()
 
-		promotionBusiness := biz.NewPromotionBusiness(promotionRepo, userPromotionRepo)
+		promotionBusiness := biz.NewPromotionBusiness(promotionRepo, userPromotionRepo, orderClient)
 
 		composer = &Composer{
 			PromotionRepo:     promotionRepo,
 			UserPromotionRepo: userPromotionRepo,
+			OrderClient:       orderClient,
+			OrderConn:         conn,
 
 			PromotionBusiness: promotionBusiness,
 		}
 	})
 
 	return composer
+}
+
+func (c *Composer) Close() {
+	if c.OrderConn != nil {
+		c.OrderConn.Close()
+	}
 }

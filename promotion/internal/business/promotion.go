@@ -26,14 +26,20 @@ type IUserPromotionRepo interface {
 	MarkAsUsed(ctx context.Context, req *entity.MarkAsUsedReq) error
 }
 
+type IOrderClient interface {
+	ValidateUser(ctx context.Context, req *entity.ValidateUserReq) (bool, error)
+}
+
 type PromotionBusiness struct {
 	promotionRepo     IPromotionRepo
 	userPromotionRepo IUserPromotionRepo
+	orderClient       IOrderClient
 }
 
-func NewPromotionBusiness(promotionRepo IPromotionRepo, userPromotionRepo IUserPromotionRepo) *PromotionBusiness {
+func NewPromotionBusiness(promotionRepo IPromotionRepo, userPromotionRepo IUserPromotionRepo, orderClient IOrderClient) *PromotionBusiness {
 	return &PromotionBusiness{
 		promotionRepo:     promotionRepo,
 		userPromotionRepo: userPromotionRepo,
+		orderClient:       orderClient,
 	}
 }

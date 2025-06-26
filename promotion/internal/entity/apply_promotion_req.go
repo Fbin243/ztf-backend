@@ -1,9 +1,9 @@
 package entity
 
 type ApplyPromotionReq struct {
-	PromotionId     string
-	UserId          string
-	OrderId         string
-	Amount          int64
-	PromotionAmount int64
+	PromotionId     string `json:"promotion_id"`
+	UserId          string `json:"user_id"`
+	OrderId         string `json:"order_id"`
+	Amount          int64  `json:"amount"`
+	PromotionAmount int64  `json:"promotion_amount"`
 }
