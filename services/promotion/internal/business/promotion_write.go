@@ -6,12 +6,14 @@ import (
 	"log"
 	"time"
 
-	"github.com/jinzhu/copier"
-	"gorm.io/gorm"
+	"ztf-backend/pkg/auth"
 	"ztf-backend/pkg/db"
 	"ztf-backend/pkg/db/base"
 	errs "ztf-backend/pkg/errors"
 	"ztf-backend/services/promotion/internal/entity"
+
+	"github.com/jinzhu/copier"
+	"gorm.io/gorm"
 )
 
 func (b *PromotionBusiness) InsertOne(
@@ -51,9 +53,13 @@ func (b *PromotionBusiness) UpdateOne(
 
 func (b *PromotionBusiness) CollectPromotion(
 	ctx context.Context,
-	userId string,
 	promotionId string,
 ) (bool, error) {
+	userId, err := auth.GetAuthKey(ctx)
+	if err != nil {
+		return false, err
+	}
+
 	// Check if the promotion exists and its type is not for all
 	promotion, err := b.promotionRepo.FindById(ctx, promotionId)
 	if err != nil {

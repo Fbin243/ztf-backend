@@ -12,7 +12,6 @@ type UpdateOrderInput struct {
 }
 
 type PayOrderInput struct {
-	UserId          string  `json:"user_id"          validate:"required,uuid"`
 	PromotionId     *string `json:"promotion_id"     validate:"omitempty,uuid"`
 	Amount          int64   `json:"amount"           validate:"required"`
 	PromotionAmount int64   `json:"promotion_amount" validate:"required"`

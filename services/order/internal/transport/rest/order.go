@@ -3,14 +3,16 @@ package rest
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/copier"
-	"github.com/samber/lo"
+	"ztf-backend/pkg/auth"
 	errs "ztf-backend/pkg/errors"
 	"ztf-backend/pkg/validation"
 	biz "ztf-backend/services/order/internal/business"
 	"ztf-backend/services/order/internal/entity"
 	"ztf-backend/services/order/internal/transport/dto"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+	"github.com/samber/lo"
 )
 
 type OrderHandler struct {
@@ -177,6 +179,7 @@ func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
+	reqCtx := auth.SetAuthKey(ctx, ctx.GetHeader("X-User-Id"))
 	stringId := ctx.Param("id")
 	var input entity.PayOrderInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
@@ -190,7 +193,7 @@ func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.PayForOrder(ctx, stringId, &input)
+	id, err := hdl.orderBusiness.PayForOrder(reqCtx, stringId, &input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

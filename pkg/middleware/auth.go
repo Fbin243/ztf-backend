@@ -3,6 +3,8 @@ package middleware
 import (
 	"net/http"
 
+	"ztf-backend/pkg/auth"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,7 +17,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("userID", userID)
+		ctx.Set(auth.AuthKey, userID)
 		ctx.Next()
 	}
 }

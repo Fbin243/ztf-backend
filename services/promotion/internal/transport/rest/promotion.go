@@ -4,11 +4,13 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
+	"ztf-backend/pkg/auth"
 	errs "ztf-backend/pkg/errors"
 	validation "ztf-backend/pkg/validation"
 	biz "ztf-backend/services/promotion/internal/business"
 	"ztf-backend/services/promotion/internal/entity"
+
+	"github.com/gin-gonic/gin"
 )
 
 type PromotionHandler struct {
@@ -78,8 +80,8 @@ func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 	}
 
 	if promotion.PromotionType == entity.PromotionTypePercentage &&
-		promotion.Value > 100 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Value must be less than 100"})
+		promotion.Value > 1 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Value must be less than or equal to 1"})
 		return
 	}
 
@@ -128,6 +130,7 @@ func (hdl *PromotionHandler) VerifyPromotion(ctx *gin.Context) {
 		return
 	}
 
+	req.UserId = ctx.GetHeader("X-User-Id")
 	valid, err := hdl.promotionBusiness.VerifyPromotion(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -137,10 +140,10 @@ func (hdl *PromotionHandler) VerifyPromotion(ctx *gin.Context) {
 }
 
 func (hdl *PromotionHandler) CollectPromotion(ctx *gin.Context) {
-	userID := ctx.GetHeader("X-User-Id")
-	promotionID := ctx.Param("id")
+	reqCtx := auth.SetAuthKey(ctx, ctx.GetHeader("X-User-Id"))
+	promotionId := ctx.Param("id")
 
-	collected, err := hdl.promotionBusiness.CollectPromotion(ctx, userID, promotionID)
+	collected, err := hdl.promotionBusiness.CollectPromotion(reqCtx, promotionId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

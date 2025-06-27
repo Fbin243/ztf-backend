@@ -5,10 +5,12 @@ import (
 	"errors"
 	"log"
 
-	"github.com/jinzhu/copier"
+	"ztf-backend/pkg/auth"
 	"ztf-backend/pkg/db/base"
 	errs "ztf-backend/pkg/errors"
 	"ztf-backend/services/order/internal/entity"
+
+	"github.com/jinzhu/copier"
 )
 
 func (b *OrderBusiness) InsertOne(
@@ -72,6 +74,11 @@ func (b *OrderBusiness) PayForOrder(
 	id string,
 	input *entity.PayOrderInput,
 ) (string, error) {
+	userId, err := auth.GetAuthKey(ctx)
+	if err != nil {
+		return "", err
+	}
+
 	// Check if the order exists
 	order, err := b.orderRepo.FindById(ctx, id)
 	if err != nil {
@@ -89,7 +96,7 @@ func (b *OrderBusiness) PayForOrder(
 	}
 
 	// Check if the user exists
-	exists, err := b.userRepo.Exists(ctx, input.UserId)
+	exists, err := b.userRepo.Exists(ctx, userId)
 	if err != nil {
 		return "", err
 	}
@@ -101,7 +108,7 @@ func (b *OrderBusiness) PayForOrder(
 	if input.PromotionId != nil {
 		success, err := b.promotionClient.ApplyPromotion(ctx, &entity.ApplyPromotionReq{
 			PromotionId:     *input.PromotionId,
-			UserId:          input.UserId,
+			UserId:          userId,
 			OrderId:         id,
 			Amount:          input.Amount,
 			PromotionAmount: input.PromotionAmount,
@@ -119,7 +126,7 @@ func (b *OrderBusiness) PayForOrder(
 	log.Printf("Promotion is applied")
 
 	// Pay for the order
-	order.UserId = &input.UserId
+	order.UserId = &userId
 	order.PromotionId = input.PromotionId
 	order.PromotionAmount = input.PromotionAmount
 	order.PayAmount = input.PayAmount
