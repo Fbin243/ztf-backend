@@ -18,7 +18,6 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true, // Enable cookies/auth
 	}))
 
-	// promotion routes
 	r.GET("/health", func(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, gin.H{"message": "ok"})
 	})
@@ -29,6 +28,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.Use(middleware.AuthMiddleware())
 
+	// promotion routes
 	r.GET("/api/v1/promotions", s.promotionHdl.GetAllPromotions)
 	r.GET("/api/v1/promotions/search", s.promotionHdl.GetPromotionByCode)
 	r.GET("/api/v1/promotions/:id", s.promotionHdl.GetPromotionById)

@@ -92,6 +92,9 @@ func (b *PromotionBusiness) CollectPromotion(
 	err = db.GetDB().Transaction(func(tx *gorm.DB) error {
 		// - Reduce the remaining_count in promotion by 1
 		err = b.promotionRepo.WithTx(tx).UpdateRemainingCount(ctx, promotionId)
+		if errors.Is(err, errs.ErrorNoRowsAffected) {
+			return errors.New("promotion is collected out")
+		}
 		if err != nil {
 			return err
 		}
@@ -208,6 +211,9 @@ func (b *PromotionBusiness) ApplyPromotion(
 
 			// -- Reduce the remaining_count in promotion by 1
 			err = b.promotionRepo.WithTx(tx).UpdateRemainingCount(ctx, req.PromotionId)
+			if errors.Is(err, errs.ErrorNoRowsAffected) {
+				return errors.New("promotion is used out")
+			}
 			if err != nil {
 				return err
 			}

@@ -11,6 +11,10 @@ x-common-healthcheck: &common-healthcheck
   timeout: 3s
   retries: 5
 
+x-common-env: &common-env
+  ORDER_GRPC_HOST: order
+  PROMOTION_GRPC_HOST: promotion
+
 services:
   order:
     <<: *common-config
@@ -19,8 +23,11 @@ services:
       context: .
       dockerfile: ./services/order/Dockerfile
     image: ztf-order:latest
+    environment:
+      <<: *common-env
     ports:
       - 8080:8080
+      - 50550:50550
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
       <<: *common-healthcheck
@@ -32,8 +39,11 @@ services:
       context: .
       dockerfile: ./services/promotion/Dockerfile
     image: ztf-promotion:latest
+    environment:
+      <<: *common-env
     ports:
       - 8081:8081
+      - 50551:50551
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8081/health"]
       <<: *common-healthcheck

@@ -61,7 +61,7 @@ protoc:
 	{} \;
 
 up:
-	@COMPOSE_BAKE=true docker compose -f docker-compose.dev.yml up -d --build
+	@COMPOSE_BAKE=true docker compose -f docker-compose.dev.yml up -d
 
 down:
 	@docker compose -f docker-compose.dev.yml down

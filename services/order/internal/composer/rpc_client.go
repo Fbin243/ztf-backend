@@ -21,6 +21,8 @@ func ComposePromotionClient() (*rpc.PromotionClient, *grpc.ClientConn) {
 		host = "localhost"
 	}
 
+	log.Printf("Connecting to Promotion gRPC service at %s:%s", host, port)
+
 	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
 	conn, err := grpc.NewClient(host+":"+port, opts)
 	if err != nil {

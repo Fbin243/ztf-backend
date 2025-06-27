@@ -21,6 +21,8 @@ func ComposeOrderClient() (*rpc.OrderClient, *grpc.ClientConn) {
 		host = "localhost"
 	}
 
+	log.Printf("Connecting to Order gRPC service at %s:%s", host, port)
+
 	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
 	conn, err := grpc.NewClient(host+":"+port, opts)
 	if err != nil {
