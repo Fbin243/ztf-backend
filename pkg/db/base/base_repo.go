@@ -4,10 +4,11 @@ import (
 	"context"
 	"errors"
 
+	errs "ztf-backend/pkg/errors"
+
 	"github.com/google/uuid"
 	"github.com/samber/lo"
 	"gorm.io/gorm"
-	errs "ztf-backend/pkg/errors"
 )
 
 type IBaseRepo[E IBaseEntity] interface {
@@ -15,6 +16,7 @@ type IBaseRepo[E IBaseEntity] interface {
 	FindById(ctx context.Context, id string) (*E, error)
 	FindByIds(ctx context.Context, ids []string) ([]E, error)
 	InsertOne(ctx context.Context, entity *E) (string, error)
+	InsertMany(ctx context.Context, entities []E) ([]string, error)
 	UpdateOne(ctx context.Context, entity *E) (string, error)
 	DeleteOne(ctx context.Context, id string) (string, error)
 	Exists(ctx context.Context, id string) (bool, error)
@@ -62,6 +64,26 @@ func (r *BaseRepo[E]) InsertOne(ctx context.Context, entity *E) (string, error) 
 		return "", err
 	}
 	return lo.FromPtr(entity).GetId(), nil
+}
+
+func (r *BaseRepo[E]) InsertMany(ctx context.Context, entities []E) ([]string, error) {
+	if len(entities) == 0 {
+		return nil, nil
+	}
+
+	for i := range entities {
+		lo.FromPtr(&entities[i]).SetId(uuid.New().String())
+	}
+
+	if err := r.DB.WithContext(ctx).Create(&entities).Error; err != nil {
+		return nil, err
+	}
+
+	ids := make([]string, len(entities))
+	for i, entity := range entities {
+		ids[i] = lo.FromPtr(&entity).GetId()
+	}
+	return ids, nil
 }
 
 func (r *BaseRepo[E]) UpdateOne(ctx context.Context, entity *E) (string, error) {
