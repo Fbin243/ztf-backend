@@ -4,8 +4,6 @@ import (
 	"log"
 	"ztf-backend/services/promotion/internal/entity"
 
-	biz "ztf-backend/services/promotion/internal/business"
-
 	"gorm.io/gorm"
 )
 
@@ -20,8 +18,4 @@ func NewPromotionRepo(db *gorm.DB) *PromotionRepo {
 	}
 
 	return &PromotionRepo{db}
-}
-
-func (r *PromotionRepo) WithTx(tx *gorm.DB) biz.IPromotionRepo {
-	return &PromotionRepo{tx}
 }

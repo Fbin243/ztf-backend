@@ -30,8 +30,14 @@ func GetComposer() *Composer {
 		promotionRepo := tidb.NewPromotionRepo(db)
 		userPromotionRepo := tidb.NewUserPromotionRepo(db)
 		orderClient, conn := ComposeOrderClient()
+		txRunner := tidb.NewGormTxRunner(db)
 
-		promotionBusiness := biz.NewPromotionBusiness(promotionRepo, userPromotionRepo, orderClient)
+		promotionBusiness := biz.NewPromotionBusiness(
+			txRunner,
+			promotionRepo,
+			userPromotionRepo,
+			orderClient,
+		)
 
 		composer = &Composer{
 			PromotionRepo:     promotionRepo,

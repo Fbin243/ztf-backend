@@ -3,8 +3,6 @@ package biz
 import (
 	"context"
 	"ztf-backend/services/promotion/internal/entity"
-
-	"gorm.io/gorm"
 )
 
 type IPromotionRepo interface {
@@ -21,7 +19,6 @@ type IPromotionRepo interface {
 }
 
 type IUserPromotionRepo interface {
-	WithTx(tx *gorm.DB) IUserPromotionRepo
 	Exists(ctx context.Context, userId string, promotionId string) (bool, error)
 	FindByUserIdAndPromotionId(
 		ctx context.Context,
@@ -55,11 +52,13 @@ type PromotionBusiness struct {
 }
 
 func NewPromotionBusiness(
+	txRunner ITxRunner,
 	promotionRepo IPromotionRepo,
 	userPromotionRepo IUserPromotionRepo,
 	orderClient IOrderClient,
 ) *PromotionBusiness {
 	return &PromotionBusiness{
+		txRunner:          txRunner,
 		promotionRepo:     promotionRepo,
 		userPromotionRepo: userPromotionRepo,
 		orderClient:       orderClient,
