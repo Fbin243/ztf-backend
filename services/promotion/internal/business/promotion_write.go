@@ -13,7 +13,7 @@ import (
 	errs "ztf-backend/services/promotion/internal/errors"
 )
 
-func (b *PromotionBusiness) InsertOne(
+func (b *PromotionBusiness) CreatePromotion(
 	ctx context.Context,
 	input *entity.CreatePromotionInput,
 ) (string, error) {
@@ -27,7 +27,7 @@ func (b *PromotionBusiness) InsertOne(
 	return b.promotionRepo.InsertOne(ctx, newPromotion)
 }
 
-func (b *PromotionBusiness) UpdateOne(
+func (b *PromotionBusiness) UpdatePromotion(
 	ctx context.Context,
 	id string,
 	input *entity.UpdatePromotionInput,
@@ -118,7 +118,7 @@ func (b *PromotionBusiness) CollectPromotion(
 	return true, nil
 }
 
-func (b *PromotionBusiness) DeleteOne(ctx context.Context, id string) (string, error) {
+func (b *PromotionBusiness) DeletePromotion(ctx context.Context, id string) (string, error) {
 	// Check if the promotion exists
 	exists, err := b.promotionRepo.Exists(ctx, id)
 	if err != nil {

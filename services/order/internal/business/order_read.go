@@ -5,15 +5,15 @@ import (
 	"ztf-backend/services/order/internal/entity"
 )
 
-func (b *OrderBusiness) FindAll(ctx context.Context) ([]entity.Order, error) {
+func (b *OrderBusiness) GetOrderList(ctx context.Context) ([]entity.Order, error) {
 	return b.orderRepo.FindAll(ctx)
 }
 
-func (b *OrderBusiness) FindById(ctx context.Context, id string) (*entity.Order, error) {
+func (b *OrderBusiness) GetOrder(ctx context.Context, id string) (*entity.Order, error) {
 	return b.orderRepo.FindById(ctx, id)
 }
 
-func (b *OrderBusiness) FindByIdWithMerchantAndUser(
+func (b *OrderBusiness) GetOrderWithMerchantAndUser(
 	ctx context.Context,
 	id string,
 ) (*entity.Order, error) {

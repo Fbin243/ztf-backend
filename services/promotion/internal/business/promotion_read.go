@@ -5,15 +5,18 @@ import (
 	"ztf-backend/services/promotion/internal/entity"
 )
 
-func (b *PromotionBusiness) FindAll(ctx context.Context) ([]entity.Promotion, error) {
+func (b *PromotionBusiness) GetPromotionList(ctx context.Context) ([]entity.Promotion, error) {
 	return b.promotionRepo.FindAll(ctx)
 }
 
-func (b *PromotionBusiness) FindById(ctx context.Context, id string) (*entity.Promotion, error) {
+func (b *PromotionBusiness) GetPromotion(
+	ctx context.Context,
+	id string,
+) (*entity.Promotion, error) {
 	return b.promotionRepo.FindById(ctx, id)
 }
 
-func (b *PromotionBusiness) FindByCode(
+func (b *PromotionBusiness) GetPromotionByCode(
 	ctx context.Context,
 	code string,
 ) (*entity.Promotion, error) {

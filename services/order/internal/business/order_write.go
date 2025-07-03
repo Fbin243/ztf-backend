@@ -12,7 +12,7 @@ import (
 	errs "ztf-backend/services/order/internal/errors"
 )
 
-func (b *OrderBusiness) InsertOne(
+func (b *OrderBusiness) CreateOrder(
 	ctx context.Context,
 	input *entity.CreateOrderInput,
 ) (string, error) {
@@ -34,7 +34,7 @@ func (b *OrderBusiness) InsertOne(
 	return b.orderRepo.InsertOne(ctx, newOrder)
 }
 
-func (b *OrderBusiness) UpdateOne(
+func (b *OrderBusiness) UpdateOrder(
 	ctx context.Context,
 	id string,
 	input *entity.UpdateOrderInput,
@@ -53,7 +53,7 @@ func (b *OrderBusiness) UpdateOne(
 	return b.orderRepo.UpdateOne(ctx, existingOrder)
 }
 
-func (b *OrderBusiness) DeleteOne(ctx context.Context, id string) (string, error) {
+func (b *OrderBusiness) DeleteOrder(ctx context.Context, id string) (string, error) {
 	// Check if the order exists
 	exists, err := b.orderRepo.Exists(ctx, id)
 	if err != nil {

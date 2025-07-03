@@ -35,7 +35,7 @@ func NewOrderHandler(
 }
 
 func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
-	orders, err := hdl.orderBusiness.FindAll(ctx)
+	orders, err := hdl.orderBusiness.GetOrderList(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -104,7 +104,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 
 func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	order, err := hdl.orderBusiness.FindByIdWithMerchantAndUser(ctx, stringId)
+	order, err := hdl.orderBusiness.GetOrderWithMerchantAndUser(ctx, stringId)
 	if err == errs.ErrorNotFound {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -136,7 +136,7 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.InsertOne(ctx, &order)
+	id, err := hdl.orderBusiness.CreateOrder(ctx, &order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -159,7 +159,7 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.UpdateOne(ctx, stringId, &order)
+	id, err := hdl.orderBusiness.UpdateOrder(ctx, stringId, &order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -170,7 +170,7 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 
 func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 	stringId := ctx.Param("id")
-	id, err := hdl.orderBusiness.DeleteOne(ctx, stringId)
+	id, err := hdl.orderBusiness.DeleteOrder(ctx, stringId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
