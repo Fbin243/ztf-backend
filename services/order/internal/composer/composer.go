@@ -3,11 +3,11 @@ package composer
 import (
 	"log"
 	"sync"
+	"ztf-backend/services/order/internal/repo/tidb"
+
+	biz "ztf-backend/services/order/internal/business"
 
 	"google.golang.org/grpc"
-	"ztf-backend/pkg/db"
-	biz "ztf-backend/services/order/internal/business"
-	"ztf-backend/services/order/internal/repo/tidb"
 )
 
 type Composer struct {
@@ -30,7 +30,7 @@ var (
 
 func GetComposer() *Composer {
 	once.Do(func() {
-		db := db.GetDB()
+		db := tidb.GetDB()
 		userRepo := tidb.NewUserRepo(db)
 		merchantRepo := tidb.NewMerchantRepo(db)
 		orderRepo := tidb.NewOrderRepo(db)

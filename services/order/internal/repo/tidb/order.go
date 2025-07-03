@@ -2,15 +2,15 @@ package tidb
 
 import (
 	"log"
+	"ztf-backend/services/order/internal/entity"
+
+	biz "ztf-backend/services/order/internal/business"
 
 	"gorm.io/gorm"
-	"ztf-backend/pkg/db/base"
-	biz "ztf-backend/services/order/internal/business"
-	"ztf-backend/services/order/internal/entity"
 )
 
 type OrderRepo struct {
-	*base.BaseRepo[entity.Order]
+	*gorm.DB
 }
 
 func NewOrderRepo(db *gorm.DB) *OrderRepo {
@@ -19,7 +19,7 @@ func NewOrderRepo(db *gorm.DB) *OrderRepo {
 		log.Printf("Error migrating order table: %v", err)
 	}
 
-	return &OrderRepo{base.NewBaseRepo[entity.Order](db)}
+	return &OrderRepo{db}
 }
 
 func (r *OrderRepo) WithTx(tx *gorm.DB) biz.IOrderRepo {

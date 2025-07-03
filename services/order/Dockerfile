@@ -4,9 +4,10 @@ FROM golang:1.24-alpine AS builder
 WORKDIR /build
 
 COPY go.mod go.sum ./
-COPY . .
+RUN go mod download
 
-RUN CGO_ENABLED=0 GOOS=linux go build -mod=vendor -o order ./services/order/cmd/api
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o order ./services/order/cmd/api
 
 # Final stage
 FROM alpine:latest AS final

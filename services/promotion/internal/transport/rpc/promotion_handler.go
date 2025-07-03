@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-
 	"ztf-backend/proto/pb/promotion"
-	biz "ztf-backend/services/promotion/internal/business"
 	"ztf-backend/services/promotion/internal/entity"
+
+	biz "ztf-backend/services/promotion/internal/business"
 )
 
 type PromotionHandler struct {

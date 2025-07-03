@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"context"
-
 	"ztf-backend/proto/pb/order"
 	"ztf-backend/services/promotion/internal/entity"
 )

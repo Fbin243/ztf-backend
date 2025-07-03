@@ -3,11 +3,11 @@ package composer
 import (
 	"log"
 	"os"
+	"ztf-backend/proto/pb/promotion"
+	"ztf-backend/services/order/internal/repo/rpc"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"ztf-backend/proto/pb/promotion"
-	"ztf-backend/services/order/internal/repo/rpc"
 )
 
 func ComposePromotionClient() (*rpc.PromotionClient, *grpc.ClientConn) {

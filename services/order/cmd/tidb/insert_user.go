@@ -4,29 +4,22 @@ import (
 	"context"
 	"log"
 	"os"
-
-	"ztf-backend/pkg/db"
-	"ztf-backend/pkg/db/base"
 	"ztf-backend/services/order/internal/entity"
+	"ztf-backend/services/order/internal/repo/tidb"
 
 	"github.com/brianvoe/gofakeit/v7"
-
-	"github.com/google/uuid"
 )
 
 func InsertUser(ctx context.Context, userCount int) {
 	var entities []entity.User
 	for range userCount {
 		entities = append(entities, entity.User{
-			BaseEntity: &base.BaseEntity{
-				Id: uuid.NewString(),
-			},
 			Username: gofakeit.Username(),
 			Email:    gofakeit.Email(),
 		})
 	}
 
-	ids, err := base.NewBaseRepo[entity.User](db.GetDB()).InsertMany(
+	ids, err := tidb.NewUserRepo(tidb.GetDB()).InsertMany(
 		context.Background(),
 		entities,
 	)
@@ -40,7 +33,11 @@ func InsertUser(ctx context.Context, userCount int) {
 	if err != nil {
 		log.Fatalf("Error creating user_ids.txt: %v", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Printf("failed to close file: %v", err)
+		}
+	}()
 
 	for _, id := range ids {
 		_, err := file.WriteString(id + "\n")

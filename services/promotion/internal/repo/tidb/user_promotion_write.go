@@ -3,10 +3,10 @@ package tidb
 import (
 	"context"
 	"time"
+	"ztf-backend/services/promotion/internal/entity"
+	"ztf-backend/services/promotion/internal/errors"
 
 	"gorm.io/gorm"
-	"ztf-backend/pkg/errors"
-	"ztf-backend/services/promotion/internal/entity"
 )
 
 func (r *UserPromotionRepo) UpsertOne(

@@ -2,8 +2,6 @@ package entity
 
 import (
 	"time"
-
-	"ztf-backend/pkg/db/base"
 )
 
 type PromotionType string
@@ -21,7 +19,9 @@ const (
 )
 
 type Promotion struct {
-	*base.BaseEntity
+	Id             string        `json:"id"              gorm:"type:char(36);primaryKey"`
+	CreatedAt      time.Time     `json:"created_at"      gorm:"autoCreateTime"`
+	UpdatedAt      time.Time     `json:"updated_at"      gorm:"autoUpdateTime"`
 	Code           string        `json:"code"            gorm:"not null"`
 	Name           string        `json:"name"            gorm:"not null"`
 	Value          float64       `json:"value"           gorm:"not null"`

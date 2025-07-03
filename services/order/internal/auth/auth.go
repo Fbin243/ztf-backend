@@ -5,7 +5,9 @@ import (
 	"errors"
 )
 
-var AuthKey = "userId"
+type ContextKey string
+
+var AuthKey ContextKey = "userId"
 
 func GetAuthKey(ctx context.Context) (string, error) {
 	userId, exists := ctx.Value(AuthKey).(string)

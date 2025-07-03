@@ -48,8 +48,6 @@ linters:
 
 formatters:
   enable:
-  - gci
-  - gofmt
   - gofumpt
   - goimports
   - golines

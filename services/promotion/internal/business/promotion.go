@@ -2,15 +2,20 @@ package biz
 
 import (
 	"context"
+	"ztf-backend/services/promotion/internal/entity"
 
 	"gorm.io/gorm"
-	"ztf-backend/pkg/db/base"
-	"ztf-backend/services/promotion/internal/entity"
 )
 
 type IPromotionRepo interface {
-	base.IBaseRepo[entity.Promotion]
-	WithTx(tx *gorm.DB) IPromotionRepo
+	FindAll(ctx context.Context) ([]entity.Promotion, error)
+	FindById(ctx context.Context, id string) (*entity.Promotion, error)
+	FindByIds(ctx context.Context, ids []string) ([]entity.Promotion, error)
+	InsertOne(ctx context.Context, entity *entity.Promotion) (string, error)
+	InsertMany(ctx context.Context, entities []entity.Promotion) ([]string, error)
+	UpdateOne(ctx context.Context, entity *entity.Promotion) (string, error)
+	DeleteOne(ctx context.Context, id string) (string, error)
+	Exists(ctx context.Context, id string) (bool, error)
 	UpdateRemainingCount(ctx context.Context, id string) error
 	FindByCode(ctx context.Context, code string) (*entity.Promotion, error)
 }
@@ -33,7 +38,17 @@ type IOrderClient interface {
 	ValidateUser(ctx context.Context, req *entity.ValidateUserReq) (bool, error)
 }
 
+type Tx interface {
+	PromotionRepo() IPromotionRepo
+	UserPromotionRepo() IUserPromotionRepo
+}
+
+type ITxRunner interface {
+	Transaction(ctx context.Context, fn func(tx Tx) error) error
+}
+
 type PromotionBusiness struct {
+	txRunner          ITxRunner
 	promotionRepo     IPromotionRepo
 	userPromotionRepo IUserPromotionRepo
 	orderClient       IOrderClient

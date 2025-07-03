@@ -7,11 +7,11 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"ztf-backend/services/order/internal/composer"
+	"ztf-backend/services/order/internal/transport/rest"
 
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
-	"ztf-backend/services/order/internal/composer"
-	"ztf-backend/services/order/internal/transport/rest"
 )
 
 type Server struct {

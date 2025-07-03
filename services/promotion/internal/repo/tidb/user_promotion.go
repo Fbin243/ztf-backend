@@ -2,10 +2,11 @@ package tidb
 
 import (
 	"log"
+	"ztf-backend/services/promotion/internal/entity"
+
+	biz "ztf-backend/services/promotion/internal/business"
 
 	"gorm.io/gorm"
-	biz "ztf-backend/services/promotion/internal/business"
-	"ztf-backend/services/promotion/internal/entity"
 )
 
 type UserPromotionRepo struct {

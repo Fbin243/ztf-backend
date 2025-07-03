@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	"ztf-backend/services/order/cmd/tidb"
 
 	"github.com/joho/godotenv"

@@ -4,13 +4,12 @@ import (
 	"context"
 	"errors"
 	"log"
-
-	"ztf-backend/pkg/auth"
-	"ztf-backend/pkg/db/base"
-	errs "ztf-backend/pkg/errors"
+	"ztf-backend/services/order/internal/auth"
 	"ztf-backend/services/order/internal/entity"
 
 	"github.com/jinzhu/copier"
+
+	errs "ztf-backend/services/order/internal/errors"
 )
 
 func (b *OrderBusiness) InsertOne(
@@ -26,9 +25,7 @@ func (b *OrderBusiness) InsertOne(
 		return "", errs.ErrorNotFound
 	}
 
-	newOrder := &entity.Order{
-		BaseEntity: &base.BaseEntity{},
-	}
+	newOrder := &entity.Order{}
 	err = copier.Copy(newOrder, input)
 	if err != nil {
 		return "", err

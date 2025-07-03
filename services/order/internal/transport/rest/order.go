@@ -2,17 +2,18 @@ package rest
 
 import (
 	"net/http"
-
-	"ztf-backend/pkg/auth"
-	errs "ztf-backend/pkg/errors"
-	"ztf-backend/pkg/validation"
-	biz "ztf-backend/services/order/internal/business"
+	"ztf-backend/services/order/internal/auth"
 	"ztf-backend/services/order/internal/entity"
 	"ztf-backend/services/order/internal/transport/dto"
+	"ztf-backend/services/order/internal/transport/validation"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 	"github.com/samber/lo"
+
+	biz "ztf-backend/services/order/internal/business"
+
+	errs "ztf-backend/services/order/internal/errors"
 )
 
 type OrderHandler struct {

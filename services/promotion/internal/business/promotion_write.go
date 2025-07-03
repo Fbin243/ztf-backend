@@ -5,24 +5,19 @@ import (
 	"errors"
 	"log"
 	"time"
-
-	"ztf-backend/pkg/auth"
-	"ztf-backend/pkg/db"
-	"ztf-backend/pkg/db/base"
-	errs "ztf-backend/pkg/errors"
+	"ztf-backend/services/promotion/internal/auth"
 	"ztf-backend/services/promotion/internal/entity"
 
 	"github.com/jinzhu/copier"
-	"gorm.io/gorm"
+
+	errs "ztf-backend/services/promotion/internal/errors"
 )
 
 func (b *PromotionBusiness) InsertOne(
 	ctx context.Context,
 	input *entity.CreatePromotionInput,
 ) (string, error) {
-	newPromotion := &entity.Promotion{
-		BaseEntity: &base.BaseEntity{},
-	}
+	newPromotion := &entity.Promotion{}
 
 	err := copier.Copy(newPromotion, input)
 	if err != nil {
@@ -95,9 +90,9 @@ func (b *PromotionBusiness) CollectPromotion(
 	}
 
 	// Collect the promotion
-	err = db.GetDB().Transaction(func(tx *gorm.DB) error {
+	err = b.txRunner.Transaction(ctx, func(tx Tx) error {
 		// - Reduce the remaining_count in promotion by 1
-		err = b.promotionRepo.WithTx(tx).UpdateRemainingCount(ctx, promotionId)
+		err = tx.PromotionRepo().UpdateRemainingCount(ctx, promotionId)
 		if errors.Is(err, errs.ErrorNoRowsAffected) {
 			return errors.New("promotion is collected out")
 		}
@@ -106,7 +101,7 @@ func (b *PromotionBusiness) CollectPromotion(
 		}
 
 		// - Insert a new user_promotion
-		_, _, err = b.userPromotionRepo.WithTx(tx).UpsertOne(ctx, &entity.UserPromotion{
+		_, _, err = tx.UserPromotionRepo().UpsertOne(ctx, &entity.UserPromotion{
 			UserId:      userId,
 			PromotionId: promotionId,
 		})
@@ -197,16 +192,17 @@ func (b *PromotionBusiness) ApplyPromotion(
 	log.Printf("Promotion: %+v", promotion)
 	if promotion.IsForAll {
 		// - Make a transaction
-		err := db.GetDB().Transaction(func(tx *gorm.DB) error {
+		err := b.txRunner.Transaction(ctx, func(tx Tx) error {
 			// -- Check if the promotion is used by the user
-			userPromotion, err := b.userPromotionRepo.WithTx(tx).
+			var userPromotion *entity.UserPromotion
+			_, err := tx.UserPromotionRepo().
 				FindByUserIdAndPromotionId(ctx, req.UserId, req.PromotionId)
 			if errors.Is(err, errs.ErrorNotFound) {
 				userPromotion = &entity.UserPromotion{
 					UserId:      req.UserId,
 					PromotionId: req.PromotionId,
 				}
-				_, _, err = b.userPromotionRepo.WithTx(tx).UpsertOne(ctx, userPromotion)
+				_, _, err = tx.UserPromotionRepo().UpsertOne(ctx, userPromotion)
 				if err != nil {
 					return err
 				}
@@ -216,7 +212,7 @@ func (b *PromotionBusiness) ApplyPromotion(
 			}
 
 			// -- Reduce the remaining_count in promotion by 1
-			err = b.promotionRepo.WithTx(tx).UpdateRemainingCount(ctx, req.PromotionId)
+			err = tx.PromotionRepo().UpdateRemainingCount(ctx, req.PromotionId)
 			if errors.Is(err, errs.ErrorNoRowsAffected) {
 				return errors.New("promotion is used out")
 			}
@@ -225,7 +221,7 @@ func (b *PromotionBusiness) ApplyPromotion(
 			}
 
 			// -- Mark as used
-			err = b.userPromotionRepo.WithTx(tx).MarkAsUsed(ctx, &entity.MarkAsUsedReq{
+			err = tx.UserPromotionRepo().MarkAsUsed(ctx, &entity.MarkAsUsedReq{
 				UserId:      req.UserId,
 				PromotionId: req.PromotionId,
 			})

@@ -3,10 +3,11 @@ package tidb
 import (
 	"context"
 	"errors"
+	"ztf-backend/services/promotion/internal/entity"
 
 	"gorm.io/gorm"
-	errs "ztf-backend/pkg/errors"
-	"ztf-backend/services/promotion/internal/entity"
+
+	errs "ztf-backend/services/promotion/internal/errors"
 )
 
 func (r *UserPromotionRepo) Exists(
