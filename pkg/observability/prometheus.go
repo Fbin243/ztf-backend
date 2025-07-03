@@ -8,13 +8,24 @@ import (
 var (
 	HttpRequestTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "api_http_request_total",
-		Help: "Total number of requests processed by the API",
-	}, []string{"path", "status"})
+		Help: "Total number of requests",
+	}, []string{"status"})
 
-	HttpRequestErrorTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: "api_http_request_error_total",
-		Help: "Total number of errors returned by the API",
-	}, []string{"path", "status"})
+	HttpRequestSuccess = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "api_http_request_success",
+		Help: "Number of successful requests",
+	}, []string{"status"})
+
+	HttpRequestError = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "api_http_request_error",
+		Help: "Number of failed requests",
+	}, []string{"status"})
+
+	HttpRequestDuration = prometheus.NewHistogramVec(prometheus.HistogramOpts{
+		Name:    "api_http_request_duration_seconds",
+		Help:    "Duration of HTTP requests in seconds",
+		Buckets: prometheus.DefBuckets,
+	}, []string{"status", "method", "path"})
 )
 
 // Custom registry (without default Go metrics)
@@ -25,6 +36,6 @@ func init() {
 	CustomRegistry.MustRegister(
 		prometheus.NewGoCollector(),
 		prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}),
-		HttpRequestTotal,
-		HttpRequestErrorTotal)
+		HttpRequestSuccess,
+		HttpRequestError)
 }

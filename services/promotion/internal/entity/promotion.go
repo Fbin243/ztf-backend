@@ -36,6 +36,7 @@ type Promotion struct {
 }
 
 func (p *Promotion) CalculatePromotionAmount(amount int64) int64 {
+	// TODO: Casting to int64 may lose precision for large amounts
 	if p.PromotionType == PromotionTypePercentage {
 		return int64(float64(amount) * p.Value)
 	}

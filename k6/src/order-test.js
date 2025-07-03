@@ -7,7 +7,7 @@ import { logger } from "./utils/logger.js";
 
 
 const userIds = new SharedArray("userIds", function () {
-  const raw = open("../../tmp/user_ids.txt");
+  const raw = open("../../tmp/user_ids2.txt");
   return raw.split("\n").filter((id) => id.trim() !== "");
 })
 
@@ -26,11 +26,21 @@ export const options = {
     //   iterations: 1,
     //   exec: "payOrderAndApplyPromotion",
     // },
-    pay_order: {
-      executor: "per-vu-iterations",
-      vus: userIds.length,
-      iterations: 1,
-      exec: "payOrder",
+    // pay_order: {
+    //   executor: "per-vu-iterations",
+    //   vus: userIds.length,
+    //   iterations: 1,
+    //   exec: "payOrder",
+    // }
+    pay_order_ramping: {
+      executor: "ramping-vus",
+      startVUs: 1,
+      stages: [
+        { duration: "10s", target: userIds.length }, // Ramp up to the number of users
+        // { duration: "10s", target: userIds.length }, // Maintain the number of users for 1 minute
+        { duration: "10s", target: 0 }, // Ramp down to 0 users
+      ],
+      exec: "payOrderAndApplyPromotion",
     }
   },
 };

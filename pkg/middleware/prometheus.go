@@ -3,9 +3,10 @@ package middleware
 import (
 	"strconv"
 
+	"ztf-backend/pkg/observability"
+
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"ztf-backend/pkg/observability"
 )
 
 // Custom metrics handler with custom registry
@@ -19,13 +20,14 @@ func PrometheusHandler() gin.HandlerFunc {
 // Middleware to record incoming requests metrics
 func RequestMetricsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		path := c.Request.URL.Path
+		// path := c.Request.URL.Path
 		c.Next()
 		status := c.Writer.Status()
+		// observability.HttpRequestDuration.WithLabelValues(strconv.Itoa(status), c.Request.Method, path).Observe(float64(c.Writer.Size()))
 		if status < 400 {
-			observability.HttpRequestTotal.WithLabelValues(path, strconv.Itoa(status)).Inc()
+			observability.HttpRequestSuccess.WithLabelValues(strconv.Itoa(status)).Inc()
 		} else {
-			observability.HttpRequestErrorTotal.WithLabelValues(path, strconv.Itoa(status)).Inc()
+			observability.HttpRequestError.WithLabelValues(strconv.Itoa(status)).Inc()
 		}
 	}
 }
