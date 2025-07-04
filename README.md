@@ -24,6 +24,8 @@ docker --version && kubectl version --client && helm version && go version && ma
 
 ### Kubernetes
 
+Follow the below steps to deploy K8s cluster in your local.
+
 ```bash
 # 1. Clone and setup
 git clone <repository-url>
@@ -37,16 +39,23 @@ kubectl config use-context orbstack # Switch context
 # 3. Deploy TiDB cluster + ZCS 
 make k8s-up
 
-# 4. Wait some minutes for deploying ... 
-
-# 5. Forward port for accessing tidb by DBeaver (Optional)
+# 4. Forward port for accessing tidb by DBeaver (Optional)
 kubectl port-forward svc/basic-tidb 4000:4000 -n tidb-cluster
-
-# 6. Delete TiDB cluster + ZCS
-make k8s-down
-
-# 7. Wait a few minutes for the deletion process to complete (especially namespace removal may take longer).
 ```
+
+Please wait some minutes for deploying, then you can check health by the below endpoints:
+
+- ztf-order: <http://localhost:30080/health>
+- ztf-promotion: <http://localhost:30081/health>
+
+Then you can also delete K8s cluster by the below command:
+
+```bash
+# Delete TiDB cluster + ZCS
+make k8s-down
+```
+
+Please Wait a few minutes for the deletion process to complete (especially namespace removal may take longer).
 
 ### Docker Compose
 
