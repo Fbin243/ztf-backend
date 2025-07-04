@@ -55,7 +55,9 @@ Then you can also delete K8s cluster by the below command:
 make k8s-down
 ```
 
-Please Wait a few minutes for the deletion process to complete (especially namespace removal may take longer).
+Please wait a few minutes for the deletion process to complete (especially namespace removal may take longer).
+
+---
 
 ### Docker Compose
 
