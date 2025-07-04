@@ -8,10 +8,12 @@ metadata:
     io.kompose.service: promotion
   name: promotion
 spec:
+  type: NodePort
   ports:
     - name: "8081"
       port: 8081
       targetPort: 8081
+      nodePort: 30081
     - name: "50551"
       port: 50551
       targetPort: 50551

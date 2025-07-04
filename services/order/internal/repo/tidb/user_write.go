@@ -13,7 +13,9 @@ func (r *UserRepo) InsertMany(ctx context.Context, users []entity.User) ([]strin
 	}
 
 	for i := range users {
-		users[i].Id = uuid.New().String()
+		if users[i].Id == "" {
+			users[i].Id = uuid.New().String()
+		}
 	}
 
 	if err := r.DB.WithContext(ctx).Create(&users).Error; err != nil {

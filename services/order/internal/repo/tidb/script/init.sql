@@ -1,6 +1,4 @@
 /* create database and tables */
-SET GLOBAL tidb_multi_statement_mode='ON' 
-
 CREATE DATABASE IF NOT EXISTS ztf_db;
 
 USE ztf_db;

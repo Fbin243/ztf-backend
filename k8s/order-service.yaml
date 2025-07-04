@@ -8,10 +8,12 @@ metadata:
     io.kompose.service: order
   name: order
 spec:
+  type: NodePort
   ports:
     - name: "8080"
       port: 8080
       targetPort: 8080
+      nodePort: 30080
     - name: "50550"
       port: 50550
       targetPort: 50550

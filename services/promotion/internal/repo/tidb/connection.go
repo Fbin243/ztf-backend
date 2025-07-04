@@ -1,6 +1,7 @@
 package tidb
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"os"
@@ -16,7 +17,36 @@ var (
 	once       sync.Once
 )
 
-func createDB() *gorm.DB {
+func init() {
+	dbPort := os.Getenv("DB_PORT")
+	dbHost := os.Getenv("DB_HOST")
+	dbName := os.Getenv("DB_NAME")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+
+	// 1. Connect to MySQL without specifying the database
+	dsnRoot := fmt.Sprintf("%s:%s@tcp(%s:%s)/?parseTime=true",
+		dbUser, dbPassword, dbHost, dbPort)
+
+	sqlDB, err := sql.Open("mysql", dsnRoot)
+	if err != nil {
+		log.Fatalf("Failed to connect to MySQL (without db): %v", err)
+	}
+	defer func() {
+		if err := sqlDB.Close(); err != nil {
+			log.Fatalf("Failed to close MySQL connection: %v", err)
+		}
+	}()
+
+	// 2. Create the database if it does not exist
+	_, err = sqlDB.Exec("CREATE DATABASE IF NOT EXISTS `" + dbName + "`")
+	if err != nil {
+		log.Fatalf("Failed to create database %s: %v", dbName, err)
+	}
+	log.Printf("Ensured database `%s` exists", dbName)
+}
+
+func connectDB() *gorm.DB {
 	dbPort := os.Getenv("DB_PORT")
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
@@ -32,13 +62,12 @@ func createDB() *gorm.DB {
 	}
 
 	log.Printf("Connected to database %s at %s:%s", dbName, dbHost, dbPort)
-
 	return db
 }
 
 func GetDB() *gorm.DB {
 	once.Do(func() {
-		dbInstance = createDB()
+		dbInstance = connectDB()
 	})
 
 	return dbInstance

@@ -21,29 +21,34 @@ spec:
         io.kompose.service: promotion
     spec:
       containers:
-        - env:
-            - name: ORDER_GRPC_HOST
-              value: order
-            - name: PROMOTION_GRPC_HOST
-              value: promotion
-          envFrom:
-            - configMapRef:
-                name: env-dev
-          image: fbin243/ztf-promotion:latest
-          livenessProbe:
-            exec:
-              command:
-                - curl
-                - -f
-                - http://localhost:8081/health
-            failureThreshold: 5
-            initialDelaySeconds: 5
-            periodSeconds: 5
-            timeoutSeconds: 3
-          name: ztf-promotion
-          ports:
-            - containerPort: 8081
-              protocol: TCP
-            - containerPort: 50551
-              protocol: TCP
+      - env:
+        - name: ORDER_GRPC_HOST
+          value: order
+        - name: PROMOTION_GRPC_HOST
+          value: promotion
+        envFrom:
+        - configMapRef:
+            name: env-dev
+        image: fbin243/ztf-promotion:latest
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+          failureThreshold: 5
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+        name: ztf-promotion
+        ports:
+        - containerPort: 8081
+          protocol: TCP
+        - containerPort: 50551
+          protocol: TCP
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
       restartPolicy: Always
