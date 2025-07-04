@@ -29,13 +29,10 @@ docker --version && kubectl version --client && helm version && go version && ma
 git clone <repository-url>
 cd ztf-backend
 
-# 2. Check kubectl context and set it to orbstack (if needed)
-# -- View current context
-kubectl config current-context
-# -- View all contexts and the currently active one
-kubectl config get-contexts
-# -- Switch context
-kubectl config use-context orbstack
+# 2. Enable kubernetes in orbstack and check kubectl context and set it to orbstack (if needed)
+kubectl config current-context # View current context
+kubectl config get-contexts # View all contexts and the currently active one
+kubectl config use-context orbstack # Switch context
 
 # 3. Deploy TiDB cluster + ZCS 
 make k8s-up
