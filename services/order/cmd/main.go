@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"ztf-backend/services/order/cmd/tidb"
+	"ztf-backend/services/order/cmd/playground"
 
 	"github.com/joho/godotenv"
 	"github.com/urfave/cli/v3"
@@ -14,7 +14,8 @@ import (
 func main() {
 	cmd := &cli.Command{
 		Commands: []*cli.Command{
-			&tidb.InsertUserCmd,
+			// &tidb.InsertUserCmd,
+			&playground.ConvertNumberTypeCmd,
 		},
 		Before: func(ctx context.Context, cmd *cli.Command) (context.Context, error) {
 			// Load environment variables
