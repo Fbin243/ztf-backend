@@ -6,17 +6,18 @@ Microservices-based coupon management system for Zalopay Tech Fresher 2025.
 
 Install these tools (see official docs for installation instructions):
 
-- **[Docker](https://docs.docker.com/get-docker/)** & **[Docker Compose](https://docs.docker.com/compose/install/)** (Optional)
-- **Kubernetes** cluster: Use [Orbstack](https://orbstack.dev/docs/kubernetes) as a control plane node and a worker node.
-- **[kubectl](https://kubernetes.io/docs/tasks/tools/)**
-- **[Helm](https://helm.sh/docs/intro/install/)** (for K8s deployment)
-- **[Go](https://go.dev/doc/install)** (for local development)
-- **[Make](https://www.gnu.org/software/make/)**
+- **[Docker](https://docs.docker.com/get-docker/)**: Platform for building, running, and managing containers.
+- **[Docker Compose](https://docs.docker.com/compose/install/)** (optional): Tool for defining and running multi-container Docker applications.
+- **[Kubernetes cluster](https://kubernetes.io/)**: Container orchestration platform; you can use **[Orbstack](https://orbstack.dev/docs/kubernetes)** for local clusters.
+- **[kubectl](https://kubernetes.io/docs/tasks/tools/)**: Command-line tool to interact with Kubernetes clusters.
+- **[Helm](https://helm.sh/docs/intro/install/)**: Package manager for Kubernetes, used to manage charts and deployments.
+- **[Go](https://go.dev/doc/install)**: Programming language required for backend development.
+- **[Make](https://www.gnu.org/software/make/)**: Build automation tool to run common development tasks.
 
 Quick verification:
 
 ```bash
-docker --version && kubectl version --client && helm version
+docker --version && kubectl version --client && helm version && go version && make -v
 ```
 
 ## Deployment
@@ -28,18 +29,26 @@ docker --version && kubectl version --client && helm version
 git clone <repository-url>
 cd ztf-backend
 
-# 2. Deploy TiDB cluster + ZCS 
+# 2. Check kubectl context and set it to orbstack (if needed)
+# -- View current context
+kubectl config current-context
+# -- View all contexts and the currently active one
+kubectl config get-contexts
+# -- Switch context
+kubectl config use-context orbstack
+
+# 3. Deploy TiDB cluster + ZCS 
 make k8s-up
 
-# 3. Wait some minutes for deploying ... 
+# 4. Wait some minutes for deploying ... 
 
-# 4. Forward port for accessing tidb by DBeaver (Optional)
+# 5. Forward port for accessing tidb by DBeaver (Optional)
 kubectl port-forward svc/basic-tidb 4000:4000 -n tidb-cluster
 
-# 5. Delete TiDB cluster + ZCS
+# 6. Delete TiDB cluster + ZCS
 make k8s-down
 
-# 6. Wait a few minutes for the deletion process to complete (especially namespace removal may take longer).
+# 7. Wait a few minutes for the deletion process to complete (especially namespace removal may take longer).
 ```
 
 ### Docker Compose

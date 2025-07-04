@@ -30,7 +30,7 @@ kubectl -n tidb-cluster apply -f https://raw.githubusercontent.com/pingcap/tidb-
 # echo "Waiting for TiDB pods to be ready..."
 # kubectl wait --for=condition=Ready pod -l app.kubernetes.io/component=tidb -n tidb-cluster --timeout=300s
 
-# echo "🌐 Port-forward to access TiDB (SQL) and Dashboard..."
+# echo "Port-forward to access TiDB (SQL) and Dashboard..."
 # echo "  ➜ SQL:       mysql --host=127.0.0.1 --port=4000 -u root"
 # echo "  ➜ Dashboard: http://localhost:12333"
 # kubectl port-forward svc/basic-tidb 4000:4000 -n tidb-cluster &

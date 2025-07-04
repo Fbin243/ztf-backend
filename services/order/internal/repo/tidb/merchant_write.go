@@ -7,7 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
-func (r *MerchantRepo) InsertMany(ctx context.Context, merchants []entity.Merchant) ([]string, error) {
+func (r *MerchantRepo) InsertMany(
+	ctx context.Context,
+	merchants []entity.Merchant,
+) ([]string, error) {
 	if len(merchants) == 0 {
 		return nil, nil
 	}
