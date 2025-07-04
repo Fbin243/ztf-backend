@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.dev.yml -o k8s/
+    kompose.version: 1.36.0 (HEAD)
+  labels:
+    io.kompose.service: grafana
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.dev.yml -o k8s/
+        kompose.version: 1.36.0 (HEAD)
+      labels:
+        io.kompose.service: grafana
+    spec:
+      containers:
+        - env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: password
+            - name: GF_SECURITY_ADMIN_USER
+              value: admin
+          image: grafana/grafana:11.3.0
+          name: grafana
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/grafana/provisioning/datasources/datasource.yaml
+              name: grafana-cm0
+              subPath: datasource.yaml
+            - mountPath: /var/lib/grafana
+              name: grafana-data
+      restartPolicy: Always
+      volumes:
+        - configMap:
+            items:
+              - key: grafana.yml
+                path: datasource.yaml
+            name: grafana-cm0
+          name: grafana-cm0
+        - name: grafana-data
+          persistentVolumeClaim:
+            claimName: grafana-data

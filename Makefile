@@ -3,10 +3,6 @@
 # Build the application
 all: build test
 
-build:
-	@echo "Building..."
-	@go build -o tmp/${SERVICE} ./services/${SERVICE}/cmd/api
-
 # Run the application
 run:
 	@go run cmd/api/main.go
@@ -65,5 +61,12 @@ up:
 
 down:
 	@docker compose -f docker-compose.dev.yml down
+
+build:
+	@echo "Building images ..."
+	@docker build -f services/order/Dockerfile -t fbin243/ztf-order:latest .
+	@docker build -f services/promotion/Dockerfile -t fbin243/ztf-promotion:latest .
+	@docker push fbin243/ztf-order:latest
+	@docker push fbin243/ztf-promotion:latest
 
 .PHONY: all build run test clean watch lint order promotion protoc

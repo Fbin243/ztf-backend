@@ -3,7 +3,6 @@ x-common-config: &common-config
     - .env.dev
   networks:
     - ztf-network
-  restart: on-failure:2
 
 x-common-healthcheck: &common-healthcheck
   start_period: 5s
