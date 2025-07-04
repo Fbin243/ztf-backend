@@ -64,9 +64,18 @@ down:
 
 build:
 	@echo "Building images ..."
-	@docker build -f services/order/Dockerfile -t fbin243/ztf-order:latest .
-	@docker build -f services/promotion/Dockerfile -t fbin243/ztf-promotion:latest .
-	@docker push fbin243/ztf-order:latest
-	@docker push fbin243/ztf-promotion:latest
+	@for service in $(SERVICE); do \
+		docker build -f services/$$service/Dockerfile -t fbin243/ztf-$$service:latest .; \
+		docker push fbin243/ztf-$$service:latest; \
+		echo "Built and pushed fbin243/ztf-$$service:latest"; \
+	done
 
-.PHONY: all build run test clean watch lint order promotion protoc
+k8s-up:
+	@chmod +x ./scripts/zcs_deploy.sh
+	@./scripts/zcs_deploy.sh
+
+k8s-down:
+	@chmod +x ./scripts/zcs_delete.sh
+	@./scripts/zcs_delete.sh
+
+.PHONY: all build run test clean watch lint lint-fix order promotion protoc k8s-up k8s-down

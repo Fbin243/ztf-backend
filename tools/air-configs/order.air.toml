@@ -5,7 +5,7 @@ tmp_dir = "tmp"
 [build]
   args_bin = []
   bin = "tmp/order"
-  cmd = "make build SERVICE=order"
+  cmd = "go build -o tmp/order ./services/order/cmd/api"
   delay = 1000
   exclude_dir = ["assets", "tmp", "vendor", "testdata", "node_modules"]
   exclude_file = []

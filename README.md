@@ -1,39 +1,75 @@
-# Project ztf-backend
+# Zalopay Coupon System (ZCS)
 
-One Paragraph of project description goes here
+Microservices-based coupon management system for Zalopay Tech Fresher 2025.
 
-## Getting Started
+## Prerequisites
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Install these tools (see official docs for installation instructions):
 
-## MakeFile
+- **[Docker](https://docs.docker.com/get-docker/)** & **[Docker Compose](https://docs.docker.com/compose/install/)** (Optional)
+- **Kubernetes** cluster: Use [Orbstack](https://orbstack.dev/docs/kubernetes) as a control plane node and a worker node.
+- **[kubectl](https://kubernetes.io/docs/tasks/tools/)**
+- **[Helm](https://helm.sh/docs/intro/install/)** (for K8s deployment)
+- **[Go](https://go.dev/doc/install)** (for local development)
+- **[Make](https://www.gnu.org/software/make/)**
 
-Run build make command with tests
+Quick verification:
+
 ```bash
-make all
+docker --version && kubectl version --client && helm version
 ```
 
-Build the application
+## Deployment
+
+### Kubernetes
+
 ```bash
-make build
+# 1. Clone and setup
+git clone <repository-url>
+cd ztf-backend
+
+# 2. Deploy TiDB cluster + ZCS 
+make k8s-up
+
+# 3. Wait some minutes for deploying ... 
+
+# 4. Forward port for accessing tidb by DBeaver (Optional)
+kubectl port-forward svc/basic-tidb 4000:4000 -n tidb-cluster
+
+# 5. Delete TiDB cluster + ZCS
+make k8s-down
+
+# 6. Wait a few minutes for the deletion process to complete (especially namespace removal may take longer).
 ```
 
-Run the application
+### Docker Compose
+
 ```bash
-make run
+# 1. Clone and setup
+git clone <repository-url>
+cd ztf-backend
+
+# 2. Create environment file .env.dev by copying .env.
+cp env.example env.dev
+
+# 3. Deploy a tidb local by tidb playgroud
+tiup playground --tag ztf_db
+
+# 4. Start ZCS
+make up
+
+# 5. Stop ZCS
+make down
 ```
 
-Live reload the application:
-```bash
-make watch
-```
+## Testing
 
-Run the test suite:
 ```bash
+# Load testing with K6
+cd k6
+npm install
+k6 run src/order-test.js
+
+# Unit tests
 make test
-```
-
-Clean up binary from the last build:
-```bash
-make clean
 ```

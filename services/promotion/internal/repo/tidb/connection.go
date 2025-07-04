@@ -7,6 +7,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -18,6 +19,13 @@ var (
 )
 
 func init() {
+	// Load environment variables
+	appEnv := "dev"
+	err := godotenv.Load(".env." + appEnv)
+	if err != nil {
+		fmt.Printf("Error loading .env.%s file: %v\n", appEnv, err)
+	}
+
 	dbPort := os.Getenv("DB_PORT")
 	dbHost := os.Getenv("DB_HOST")
 	dbName := os.Getenv("DB_NAME")
@@ -30,7 +38,7 @@ func init() {
 
 	sqlDB, err := sql.Open("mysql", dsnRoot)
 	if err != nil {
-		log.Fatalf("Failed to connect to MySQL (without db): %v", err)
+		log.Fatalf("Failed to connect to MySQL: %v", err)
 	}
 	defer func() {
 		if err := sqlDB.Close(); err != nil {
