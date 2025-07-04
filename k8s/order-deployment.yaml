@@ -20,6 +20,10 @@ spec:
       labels:
         io.kompose.service: order
     spec:
+      initContainers:
+      - name: wait-for-tidb
+        image: busybox
+        command: [ 'sh', '-c', 'until nc -z basic-tidb.tidb-cluster 4000; do echo waiting; sleep 5; done;' ]
       containers:
       - env:
         - name: ORDER_GRPC_HOST
