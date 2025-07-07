@@ -24,7 +24,7 @@ type Promotion struct {
 	UpdatedAt      time.Time     `json:"updated_at"      gorm:"autoUpdateTime"`
 	Code           string        `json:"code"            gorm:"not null"`
 	Name           string        `json:"name"            gorm:"not null"`
-	Value          float64       `json:"value"           gorm:"not null"`
+	Value          int64         `json:"value"           gorm:"not null"`
 	Description    string        `json:"description"`
 	PromotionType  PromotionType `json:"promotion_type"  gorm:"not null"`
 	UsageMethod    UsageMethod   `json:"usage_method"    gorm:"not null"`
@@ -36,9 +36,8 @@ type Promotion struct {
 }
 
 func (p *Promotion) CalculatePromotionAmount(amount int64) int64 {
-	// TODO: Casting to int64 may lose precision for large amounts
 	if p.PromotionType == PromotionTypePercentage {
-		return int64(float64(amount) * p.Value)
+		return amount * p.Value / 100
 	}
 	return int64(p.Value)
 }

@@ -10,6 +10,7 @@ var ConvertNumberTypeCmd = cli.Command{
 	Name: "convert-number-type",
 	Action: func(ctx context.Context, c *cli.Command) error {
 		ConvertNumberType()
+		ConvertNumberTypeWithDecimal()
 		return nil
 	},
 }

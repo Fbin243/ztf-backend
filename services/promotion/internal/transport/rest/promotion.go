@@ -81,8 +81,8 @@ func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 	}
 
 	if promotion.PromotionType == entity.PromotionTypePercentage &&
-		promotion.Value > 1 {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Value must be less than or equal to 1"})
+		promotion.Value > 100 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Value must be less than or equal to 100%"})
 		return
 	}
 
