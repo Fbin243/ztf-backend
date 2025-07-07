@@ -3,8 +3,11 @@ package biz
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
+	"ztf-backend/services/order/pkg/convert"
+	"ztf-backend/services/order/pkg/locker"
 	"ztf-backend/services/promotion/internal/auth"
 	"ztf-backend/services/promotion/internal/entity"
 
@@ -89,6 +92,21 @@ func (b *PromotionBusiness) CollectPromotion(
 		return false, errors.New("promotion is already collected")
 	}
 
+	// Acquire a lock
+	locker := locker.NewLocker(
+		"promotion:collect:"+convert.ConvIntToStr(promotionId),
+		60*time.Second,
+		3,
+		500*time.Millisecond,
+	)
+	err = locker.Acquire()
+	if err != nil {
+		return false, errors.New("failed to acquire lock: " + err.Error())
+	}
+
+	// log.Printf("Promotion %d is being collected by user %d", promotionId, userId)
+	// time.Sleep(30000 * time.Millisecond) // Simulate some processing time
+
 	// Collect the promotion
 	err = b.txRunner.Transaction(ctx, func(tx Tx) error {
 		// - Reduce the remaining_count in promotion by 1
@@ -113,6 +131,12 @@ func (b *PromotionBusiness) CollectPromotion(
 	})
 	if err != nil {
 		return false, errors.New("failed to collect promotion: " + err.Error())
+	}
+
+	// Release the lock
+	realeased, err := locker.Release()
+	if err != nil || !realeased {
+		return false, fmt.Errorf("released: %v, failed to release lock: %v", realeased, err)
 	}
 
 	return true, nil

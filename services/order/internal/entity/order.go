@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type Order struct {
-	Id              int64     `json:"id"               gorm:"type:char(36);primaryKey"`
+	Id              int64     `json:"id"               gorm:"primaryKey"`
 	CreatedAt       time.Time `json:"created_at"       gorm:"autoCreateTime"`
 	UpdatedAt       time.Time `json:"updated_at"       gorm:"autoUpdateTime"`
 	MerchantId      int64     `json:"merchant_id"`

@@ -14,3 +14,7 @@ func MustConvStrToInt(idStr string) int64 {
 
 	return id
 }
+
+func ConvIntToStr(id int64) string {
+	return strconv.FormatInt(id, 10)
+}

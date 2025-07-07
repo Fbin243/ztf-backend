@@ -19,7 +19,7 @@ const (
 )
 
 type Promotion struct {
-	Id             int64         `json:"id"              gorm:"type:char(36);primaryKey"`
+	Id             int64         `json:"id"              gorm:"primaryKey"`
 	CreatedAt      time.Time     `json:"created_at"      gorm:"autoCreateTime"`
 	UpdatedAt      time.Time     `json:"updated_at"      gorm:"autoUpdateTime"`
 	Code           string        `json:"code"            gorm:"not null"`
@@ -39,5 +39,5 @@ func (p *Promotion) CalculatePromotionAmount(amount int64) int64 {
 	if p.PromotionType == PromotionTypePercentage {
 		return amount * p.Value / 100
 	}
-	return int64(p.Value)
+	return p.Value
 }
