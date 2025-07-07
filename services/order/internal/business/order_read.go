@@ -9,13 +9,13 @@ func (b *OrderBusiness) GetOrderList(ctx context.Context) ([]entity.Order, error
 	return b.orderRepo.FindAll(ctx)
 }
 
-func (b *OrderBusiness) GetOrder(ctx context.Context, id string) (*entity.Order, error) {
+func (b *OrderBusiness) GetOrder(ctx context.Context, id int64) (*entity.Order, error) {
 	return b.orderRepo.FindById(ctx, id)
 }
 
 func (b *OrderBusiness) GetOrderWithMerchantAndUser(
 	ctx context.Context,
-	id string,
+	id int64,
 ) (*entity.Order, error) {
 	order, err := b.orderRepo.FindByIdWithMerchantAndUser(ctx, id)
 	if err != nil {
@@ -24,6 +24,6 @@ func (b *OrderBusiness) GetOrderWithMerchantAndUser(
 	return order, nil
 }
 
-func (b *OrderBusiness) FindByIds(ctx context.Context, ids []string) ([]entity.Order, error) {
+func (b *OrderBusiness) FindByIds(ctx context.Context, ids []int64) ([]entity.Order, error) {
 	return b.orderRepo.FindByIds(ctx, ids)
 }

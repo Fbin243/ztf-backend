@@ -9,17 +9,17 @@ import (
 func seedUsers() {
 	ids, err := NewUserRepo(GetDB()).InsertMany(context.Background(), []entity.User{
 		{
-			Id:       "a1927cb1-1db0-4b18-91ed-578559ba7489",
+			Id:       1,
 			Username: "ntbinh",
 			Email:    "ntbinh243@gmail.com",
 		},
 		{
-			Id:       "bb8a677a-c9f3-46ca-8299-54b23d2c4d23",
+			Id:       2,
 			Username: "dqtrieu",
 			Email:    "dqtrieu@gmail.com",
 		},
 		{
-			Id:       "a7dacaa5-baa2-4458-b62e-27a5a073dfb1",
+			Id:       3,
 			Username: "hatra",
 			Email:    "hatra@gmail.com",
 		},
@@ -34,17 +34,17 @@ func seedUsers() {
 func seedMerchants() {
 	merchantIds, err := NewMerchantRepo(GetDB()).InsertMany(context.Background(), []entity.Merchant{
 		{
-			Id:       "53c7e139-5c92-49e7-a4b2-667782e8fd9e",
+			Id:       4,
 			Username: "highland",
 			Email:    "merchant@highland.com",
 		},
 		{
-			Id:       "1540bf4a-07d6-48b9-8047-726c9150cf1f",
+			Id:       5,
 			Username: "phuclong",
 			Email:    "merchant2@phuclong.com",
 		},
 		{
-			Id:       "9b66ffae-02d1-48b0-94e3-937adf52f85a",
+			Id:       6,
 			Username: "thecoffeehouse",
 			Email:    "merchant3@thecoffeehouse.com",
 		},

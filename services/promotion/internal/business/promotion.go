@@ -7,27 +7,27 @@ import (
 
 type IPromotionRepo interface {
 	FindAll(ctx context.Context) ([]entity.Promotion, error)
-	FindById(ctx context.Context, id string) (*entity.Promotion, error)
-	FindByIds(ctx context.Context, ids []string) ([]entity.Promotion, error)
-	InsertOne(ctx context.Context, entity *entity.Promotion) (string, error)
-	InsertMany(ctx context.Context, entities []entity.Promotion) ([]string, error)
-	UpdateOne(ctx context.Context, entity *entity.Promotion) (string, error)
-	DeleteOne(ctx context.Context, id string) (string, error)
-	Exists(ctx context.Context, id string) (bool, error)
-	UpdateRemainingCount(ctx context.Context, id string) error
+	FindById(ctx context.Context, id int64) (*entity.Promotion, error)
+	FindByIds(ctx context.Context, ids []int64) ([]entity.Promotion, error)
+	InsertOne(ctx context.Context, entity *entity.Promotion) (int64, error)
+	InsertMany(ctx context.Context, entities []entity.Promotion) ([]int64, error)
+	UpdateOne(ctx context.Context, entity *entity.Promotion) (int64, error)
+	DeleteOne(ctx context.Context, id int64) (int64, error)
+	Exists(ctx context.Context, id int64) (bool, error)
+	UpdateRemainingCount(ctx context.Context, id int64) error
 	FindByCode(ctx context.Context, code string) (*entity.Promotion, error)
 }
 
 type IUserPromotionRepo interface {
-	Exists(ctx context.Context, userId string, promotionId string) (bool, error)
+	Exists(ctx context.Context, userId int64, promotionId int64) (bool, error)
 	FindByUserIdAndPromotionId(
 		ctx context.Context,
-		userId string,
-		promotionId string,
+		userId int64,
+		promotionId int64,
 	) (*entity.UserPromotion, error)
-	FindByUserId(ctx context.Context, userId string) ([]entity.UserPromotion, error)
-	UpsertOne(ctx context.Context, userPromotion *entity.UserPromotion) (string, string, error)
-	DeleteOne(ctx context.Context, userId string, promotionId string) (string, string, error)
+	FindByUserId(ctx context.Context, userId int64) ([]entity.UserPromotion, error)
+	UpsertOne(ctx context.Context, userPromotion *entity.UserPromotion) (int64, int64, error)
+	DeleteOne(ctx context.Context, userId int64, promotionId int64) (int64, int64, error)
 	MarkAsUsed(ctx context.Context, req *entity.MarkAsUsedReq) error
 }
 

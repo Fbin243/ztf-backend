@@ -3,18 +3,17 @@ package tidb
 import (
 	"context"
 	"ztf-backend/services/order/internal/entity"
-
-	"github.com/google/uuid"
+	"ztf-backend/services/order/pkg/idgen"
 )
 
-func (r *UserRepo) InsertMany(ctx context.Context, users []entity.User) ([]string, error) {
+func (r *UserRepo) InsertMany(ctx context.Context, users []entity.User) ([]int64, error) {
 	if len(users) == 0 {
 		return nil, nil
 	}
 
 	for i := range users {
-		if users[i].Id == "" {
-			users[i].Id = uuid.New().String()
+		if users[i].Id == 0 {
+			users[i].Id = idgen.GenerateID()
 		}
 	}
 
@@ -22,7 +21,7 @@ func (r *UserRepo) InsertMany(ctx context.Context, users []entity.User) ([]strin
 		return nil, err
 	}
 
-	ids := make([]string, len(users))
+	ids := make([]int64, len(users))
 	for i, user := range users {
 		ids[i] = user.Id
 	}

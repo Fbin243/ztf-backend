@@ -12,8 +12,8 @@ import (
 
 func (r *UserPromotionRepo) Exists(
 	ctx context.Context,
-	userId string,
-	promotionId string,
+	userId int64,
+	promotionId int64,
 ) (bool, error) {
 	var count int64
 	err := r.WithContext(ctx).
@@ -29,7 +29,7 @@ func (r *UserPromotionRepo) Exists(
 
 func (r *UserPromotionRepo) FindByUserId(
 	ctx context.Context,
-	userId string,
+	userId int64,
 ) ([]entity.UserPromotion, error) {
 	var userPromotions []entity.UserPromotion
 	err := r.WithContext(ctx).Where("user_id = ?", userId).Find(&userPromotions).Error
@@ -41,8 +41,8 @@ func (r *UserPromotionRepo) FindByUserId(
 
 func (r *UserPromotionRepo) FindByUserIdAndPromotionId(
 	ctx context.Context,
-	userId string,
-	promotionId string,
+	userId int64,
+	promotionId int64,
 ) (*entity.UserPromotion, error) {
 	userPromotion := &entity.UserPromotion{}
 	err := r.WithContext(ctx).

@@ -16,12 +16,12 @@ import (
 func (b *PromotionBusiness) CreatePromotion(
 	ctx context.Context,
 	input *entity.CreatePromotionInput,
-) (string, error) {
+) (int64, error) {
 	newPromotion := &entity.Promotion{}
 
 	err := copier.Copy(newPromotion, input)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	return b.promotionRepo.InsertOne(ctx, newPromotion)
@@ -29,18 +29,18 @@ func (b *PromotionBusiness) CreatePromotion(
 
 func (b *PromotionBusiness) UpdatePromotion(
 	ctx context.Context,
-	id string,
+	id int64,
 	input *entity.UpdatePromotionInput,
-) (string, error) {
+) (int64, error) {
 	// Check if the promotion exists
 	existingPromotion, err := b.promotionRepo.FindById(ctx, id)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	err = copier.Copy(existingPromotion, input)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	return b.promotionRepo.UpdateOne(ctx, existingPromotion)
@@ -48,7 +48,7 @@ func (b *PromotionBusiness) UpdatePromotion(
 
 func (b *PromotionBusiness) CollectPromotion(
 	ctx context.Context,
-	promotionId string,
+	promotionId int64,
 ) (bool, error) {
 	userId, err := auth.GetAuthKey(ctx)
 	if err != nil {
@@ -118,14 +118,14 @@ func (b *PromotionBusiness) CollectPromotion(
 	return true, nil
 }
 
-func (b *PromotionBusiness) DeletePromotion(ctx context.Context, id string) (string, error) {
+func (b *PromotionBusiness) DeletePromotion(ctx context.Context, id int64) (int64, error) {
 	// Check if the promotion exists
 	exists, err := b.promotionRepo.Exists(ctx, id)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	if !exists {
-		return "", errs.ErrorNotFound
+		return 0, errs.ErrorNotFound
 	}
 
 	return b.promotionRepo.DeleteOne(ctx, id)

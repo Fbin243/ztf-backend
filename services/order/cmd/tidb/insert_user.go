@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strconv"
 	"ztf-backend/services/order/internal/entity"
 	"ztf-backend/services/order/internal/repo/tidb"
 
@@ -40,7 +41,7 @@ func InsertUser(ctx context.Context, userCount int) {
 	}()
 
 	for _, id := range ids {
-		_, err := file.WriteString(id + "\n")
+		_, err := file.WriteString(strconv.FormatInt(id, 10) + "\n")
 		if err != nil {
 			log.Fatalf("Error writing to user_ids.txt: %v", err)
 		}

@@ -12,24 +12,24 @@ import (
 func (r *UserPromotionRepo) UpsertOne(
 	ctx context.Context,
 	userPromotion *entity.UserPromotion,
-) (string, string, error) {
+) (int64, int64, error) {
 	err := r.WithContext(ctx).Save(userPromotion).Error
 	if err != nil {
-		return "", "", err
+		return 0, 0, err
 	}
 	return userPromotion.UserId, userPromotion.PromotionId, nil
 }
 
 func (r *UserPromotionRepo) DeleteOne(
 	ctx context.Context,
-	userId string,
-	promotionId string,
-) (string, string, error) {
+	userId int64,
+	promotionId int64,
+) (int64, int64, error) {
 	err := r.WithContext(ctx).
 		Delete(&entity.UserPromotion{}, "user_id = ? AND promotion_id = ?", userId, promotionId).
 		Error
 	if err != nil {
-		return "", "", err
+		return 0, 0, err
 	}
 	return userId, promotionId, nil
 }

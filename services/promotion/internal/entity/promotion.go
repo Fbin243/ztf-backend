@@ -19,7 +19,7 @@ const (
 )
 
 type Promotion struct {
-	Id             string        `json:"id"              gorm:"type:char(36);primaryKey"`
+	Id             int64         `json:"id"              gorm:"type:char(36);primaryKey"`
 	CreatedAt      time.Time     `json:"created_at"      gorm:"autoCreateTime"`
 	UpdatedAt      time.Time     `json:"updated_at"      gorm:"autoUpdateTime"`
 	Code           string        `json:"code"            gorm:"not null"`
@@ -29,7 +29,7 @@ type Promotion struct {
 	PromotionType  PromotionType `json:"promotion_type"  gorm:"not null"`
 	UsageMethod    UsageMethod   `json:"usage_method"    gorm:"not null"`
 	ExpirationDate time.Time     `json:"expiration_date"`
-	CampaignId     string        `json:"campaign_id"     gorm:"not null"`
+	CampaignId     int64         `json:"campaign_id"     gorm:"not null"`
 	RemainingCount int64         `json:"remaining_count" gorm:"not null"`
 	IsForAll       bool          `json:"is_for_all"      gorm:"not null"`
 	// Metadata       map[string]any `json:"metadata"`

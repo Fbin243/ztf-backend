@@ -18,7 +18,7 @@ func (r *PromotionRepo) FindAll(ctx context.Context) ([]entity.Promotion, error)
 	return promos, nil
 }
 
-func (r *PromotionRepo) FindById(ctx context.Context, id string) (*entity.Promotion, error) {
+func (r *PromotionRepo) FindById(ctx context.Context, id int64) (*entity.Promotion, error) {
 	var promo entity.Promotion
 	err := r.DB.WithContext(ctx).First(&promo, "id = ?", id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -30,7 +30,7 @@ func (r *PromotionRepo) FindById(ctx context.Context, id string) (*entity.Promot
 	return &promo, nil
 }
 
-func (r *PromotionRepo) FindByIds(ctx context.Context, ids []string) ([]entity.Promotion, error) {
+func (r *PromotionRepo) FindByIds(ctx context.Context, ids []int64) ([]entity.Promotion, error) {
 	var promos []entity.Promotion
 	if err := r.DB.WithContext(ctx).Where("id IN (?)", ids).Find(&promos).Error; err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (r *PromotionRepo) FindByIds(ctx context.Context, ids []string) ([]entity.P
 	return promos, nil
 }
 
-func (r *PromotionRepo) Exists(ctx context.Context, id string) (bool, error) {
+func (r *PromotionRepo) Exists(ctx context.Context, id int64) (bool, error) {
 	var count int64
 	var promo entity.Promotion
 	err := r.DB.WithContext(ctx).Model(&promo).Where("id = ?", id).Count(&count).Error

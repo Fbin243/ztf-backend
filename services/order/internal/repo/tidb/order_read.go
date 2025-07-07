@@ -18,7 +18,7 @@ func (r *OrderRepo) FindAll(ctx context.Context) ([]entity.Order, error) {
 	return orders, nil
 }
 
-func (r *OrderRepo) FindById(ctx context.Context, id string) (*entity.Order, error) {
+func (r *OrderRepo) FindById(ctx context.Context, id int64) (*entity.Order, error) {
 	var order entity.Order
 	err := r.DB.WithContext(ctx).First(&order, "id = ?", id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -30,7 +30,7 @@ func (r *OrderRepo) FindById(ctx context.Context, id string) (*entity.Order, err
 	return &order, nil
 }
 
-func (r *OrderRepo) FindByIds(ctx context.Context, ids []string) ([]entity.Order, error) {
+func (r *OrderRepo) FindByIds(ctx context.Context, ids []int64) ([]entity.Order, error) {
 	var orders []entity.Order
 	if err := r.DB.WithContext(ctx).Where("id IN (?)", ids).Find(&orders).Error; err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (r *OrderRepo) FindByIds(ctx context.Context, ids []string) ([]entity.Order
 	return orders, nil
 }
 
-func (r *OrderRepo) Exists(ctx context.Context, id string) (bool, error) {
+func (r *OrderRepo) Exists(ctx context.Context, id int64) (bool, error) {
 	var count int64
 	var order entity.Order
 	err := r.DB.WithContext(ctx).Model(&order).Where("id = ?", id).Count(&count).Error
@@ -50,7 +50,7 @@ func (r *OrderRepo) Exists(ctx context.Context, id string) (bool, error) {
 
 func (r *OrderRepo) FindByIdWithMerchantAndUser(
 	ctx context.Context,
-	id string,
+	id int64,
 ) (*entity.Order, error) {
 	var order entity.Order
 	if err := r.DB.WithContext(ctx).Preload("Merchant").Preload("User").Where("id = ?", id).First(&order).Error; err != nil {

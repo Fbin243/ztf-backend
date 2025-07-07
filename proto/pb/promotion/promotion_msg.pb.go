@@ -23,9 +23,9 @@ const (
 
 type ApplyPromotionRequest struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
-	PromotionId     string                 `protobuf:"bytes,1,opt,name=promotion_id,json=promotionId,proto3" json:"promotion_id,omitempty"`
-	UserId          string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	OrderId         string                 `protobuf:"bytes,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
+	PromotionId     int64                  `protobuf:"varint,1,opt,name=promotion_id,json=promotionId,proto3" json:"promotion_id,omitempty"`
+	UserId          int64                  `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	OrderId         int64                  `protobuf:"varint,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`
 	Amount          int64                  `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`
 	PromotionAmount int64                  `protobuf:"varint,5,opt,name=promotion_amount,json=promotionAmount,proto3" json:"promotion_amount,omitempty"`
 	unknownFields   protoimpl.UnknownFields
@@ -62,25 +62,25 @@ func (*ApplyPromotionRequest) Descriptor() ([]byte, []int) {
 	return file_promotion_promotion_msg_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ApplyPromotionRequest) GetPromotionId() string {
+func (x *ApplyPromotionRequest) GetPromotionId() int64 {
 	if x != nil {
 		return x.PromotionId
 	}
-	return ""
+	return 0
 }
 
-func (x *ApplyPromotionRequest) GetUserId() string {
+func (x *ApplyPromotionRequest) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
-func (x *ApplyPromotionRequest) GetOrderId() string {
+func (x *ApplyPromotionRequest) GetOrderId() int64 {
 	if x != nil {
 		return x.OrderId
 	}
-	return ""
+	return 0
 }
 
 func (x *ApplyPromotionRequest) GetAmount() int64 {
@@ -147,9 +147,9 @@ const file_promotion_promotion_msg_proto_rawDesc = "" +
 	"\n" +
 	"\x1dpromotion/promotion_msg.proto\x12\tpromotion\"\xb1\x01\n" +
 	"\x15ApplyPromotionRequest\x12!\n" +
-	"\fpromotion_id\x18\x01 \x01(\tR\vpromotionId\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x19\n" +
-	"\border_id\x18\x03 \x01(\tR\aorderId\x12\x16\n" +
+	"\fpromotion_id\x18\x01 \x01(\x03R\vpromotionId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x03R\x06userId\x12\x19\n" +
+	"\border_id\x18\x03 \x01(\x03R\aorderId\x12\x16\n" +
 	"\x06amount\x18\x04 \x01(\x03R\x06amount\x12)\n" +
 	"\x10promotion_amount\x18\x05 \x01(\x03R\x0fpromotionAmount\"2\n" +
 	"\x16ApplyPromotionResponse\x12\x18\n" +

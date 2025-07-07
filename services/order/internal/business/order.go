@@ -6,26 +6,26 @@ import (
 )
 
 type IUserRepo interface {
-	Exists(ctx context.Context, id string) (bool, error)
-	FindByIds(ctx context.Context, ids []string) ([]entity.User, error)
+	Exists(ctx context.Context, id int64) (bool, error)
+	FindByIds(ctx context.Context, ids []int64) ([]entity.User, error)
 }
 
 type IMerchantRepo interface {
-	Exists(ctx context.Context, id string) (bool, error)
-	FindByIds(ctx context.Context, ids []string) ([]entity.Merchant, error)
+	Exists(ctx context.Context, id int64) (bool, error)
+	FindByIds(ctx context.Context, ids []int64) ([]entity.Merchant, error)
 }
 
 type IOrderRepo interface {
 	FindAll(ctx context.Context) ([]entity.Order, error)
-	FindById(ctx context.Context, id string) (*entity.Order, error)
-	FindByIds(ctx context.Context, ids []string) ([]entity.Order, error)
-	InsertOne(ctx context.Context, entity *entity.Order) (string, error)
-	InsertMany(ctx context.Context, entities []entity.Order) ([]string, error)
-	UpdateOne(ctx context.Context, entity *entity.Order) (string, error)
-	DeleteOne(ctx context.Context, id string) (string, error)
-	Exists(ctx context.Context, id string) (bool, error)
-	FindByIdWithMerchantAndUser(ctx context.Context, id string) (*entity.Order, error)
-	UpdatePaymentInfo(ctx context.Context, id string, order *entity.Order) (string, error)
+	FindById(ctx context.Context, id int64) (*entity.Order, error)
+	FindByIds(ctx context.Context, ids []int64) ([]entity.Order, error)
+	InsertOne(ctx context.Context, entity *entity.Order) (int64, error)
+	InsertMany(ctx context.Context, entities []entity.Order) ([]int64, error)
+	UpdateOne(ctx context.Context, entity *entity.Order) (int64, error)
+	DeleteOne(ctx context.Context, id int64) (int64, error)
+	Exists(ctx context.Context, id int64) (bool, error)
+	FindByIdWithMerchantAndUser(ctx context.Context, id int64) (*entity.Order, error)
+	UpdatePaymentInfo(ctx context.Context, id int64, order *entity.Order) (int64, error)
 }
 
 type IPromotionClient interface {

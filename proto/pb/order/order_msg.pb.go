@@ -23,7 +23,7 @@ const (
 
 type ValidateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -58,11 +58,11 @@ func (*ValidateUserRequest) Descriptor() ([]byte, []int) {
 	return file_order_order_msg_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ValidateUserRequest) GetUserId() string {
+func (x *ValidateUserRequest) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
-	return ""
+	return 0
 }
 
 type ValidateUserResponse struct {
@@ -115,7 +115,7 @@ const file_order_order_msg_proto_rawDesc = "" +
 	"\n" +
 	"\x15order/order_msg.proto\x12\tpromotion\".\n" +
 	"\x13ValidateUserRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\",\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\",\n" +
 	"\x14ValidateUserResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05validB\x1cZ\x1aztf-backend/proto/pb/orderb\x06proto3"
 

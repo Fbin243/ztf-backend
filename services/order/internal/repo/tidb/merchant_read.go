@@ -18,7 +18,7 @@ func (r *MerchantRepo) FindAll(ctx context.Context) ([]entity.Merchant, error) {
 	return merchants, nil
 }
 
-func (r *MerchantRepo) FindById(ctx context.Context, id string) (*entity.Merchant, error) {
+func (r *MerchantRepo) FindById(ctx context.Context, id int64) (*entity.Merchant, error) {
 	var merchant entity.Merchant
 	err := r.DB.WithContext(ctx).First(&merchant, "id = ?", id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -30,7 +30,7 @@ func (r *MerchantRepo) FindById(ctx context.Context, id string) (*entity.Merchan
 	return &merchant, nil
 }
 
-func (r *MerchantRepo) FindByIds(ctx context.Context, ids []string) ([]entity.Merchant, error) {
+func (r *MerchantRepo) FindByIds(ctx context.Context, ids []int64) ([]entity.Merchant, error) {
 	var merchants []entity.Merchant
 	if err := r.DB.WithContext(ctx).Where("id IN (?)", ids).Find(&merchants).Error; err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (r *MerchantRepo) FindByIds(ctx context.Context, ids []string) ([]entity.Me
 	return merchants, nil
 }
 
-func (r *MerchantRepo) Exists(ctx context.Context, id string) (bool, error) {
+func (r *MerchantRepo) Exists(ctx context.Context, id int64) (bool, error) {
 	var count int64
 	var merchant entity.Merchant
 	err := r.DB.WithContext(ctx).Model(&merchant).Where("id = ?", id).Count(&count).Error

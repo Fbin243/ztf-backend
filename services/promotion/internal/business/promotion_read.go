@@ -11,7 +11,7 @@ func (b *PromotionBusiness) GetPromotionList(ctx context.Context) ([]entity.Prom
 
 func (b *PromotionBusiness) GetPromotion(
 	ctx context.Context,
-	id string,
+	id int64,
 ) (*entity.Promotion, error) {
 	return b.promotionRepo.FindById(ctx, id)
 }

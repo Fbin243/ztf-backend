@@ -1,6 +1,6 @@
 package entity
 
 type MarkAsUsedReq struct {
-	UserId      string `json:"user_id"`
-	PromotionId string `json:"promotion_id"`
+	UserId      int64 `json:"user_id"`
+	PromotionId int64 `json:"promotion_id"`
 }

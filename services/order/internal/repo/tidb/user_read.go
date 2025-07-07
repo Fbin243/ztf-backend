@@ -18,7 +18,7 @@ func (r *UserRepo) FindAll(ctx context.Context) ([]entity.User, error) {
 	return users, nil
 }
 
-func (r *UserRepo) FindById(ctx context.Context, id string) (*entity.User, error) {
+func (r *UserRepo) FindById(ctx context.Context, id int64) (*entity.User, error) {
 	var user entity.User
 	err := r.DB.WithContext(ctx).First(&user, "id = ?", id).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -30,7 +30,7 @@ func (r *UserRepo) FindById(ctx context.Context, id string) (*entity.User, error
 	return &user, nil
 }
 
-func (r *UserRepo) FindByIds(ctx context.Context, ids []string) ([]entity.User, error) {
+func (r *UserRepo) FindByIds(ctx context.Context, ids []int64) ([]entity.User, error) {
 	var users []entity.User
 	if err := r.DB.WithContext(ctx).Where("id IN (?)", ids).Find(&users).Error; err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (r *UserRepo) FindByIds(ctx context.Context, ids []string) ([]entity.User, 
 	return users, nil
 }
 
-func (r *UserRepo) Exists(ctx context.Context, id string) (bool, error) {
+func (r *UserRepo) Exists(ctx context.Context, id int64) (bool, error) {
 	var count int64
 	var user entity.User
 	err := r.DB.WithContext(ctx).Model(&user).Where("id = ?", id).Count(&count).Error
@@ -48,7 +48,7 @@ func (r *UserRepo) Exists(ctx context.Context, id string) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *UserRepo) FindUsersByIds(ctx context.Context, ids []string) ([]entity.User, error) {
+func (r *UserRepo) FindUsersByIds(ctx context.Context, ids []int64) ([]entity.User, error) {
 	var users []entity.User
 	if err := r.DB.WithContext(ctx).Where("id IN (?)", ids).Find(&users).Error; err != nil {
 		return nil, err

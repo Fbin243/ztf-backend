@@ -13,6 +13,6 @@ func NewMerchantBusiness(merchantRepo IMerchantRepo) *MerchantBusiness {
 	return &MerchantBusiness{merchantRepo: merchantRepo}
 }
 
-func (b *MerchantBusiness) FindByIds(ctx context.Context, ids []string) ([]entity.Merchant, error) {
+func (b *MerchantBusiness) FindByIds(ctx context.Context, ids []int64) ([]entity.Merchant, error) {
 	return b.merchantRepo.FindByIds(ctx, ids)
 }

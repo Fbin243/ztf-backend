@@ -3,6 +3,7 @@ package rest
 import (
 	"errors"
 	"net/http"
+	"ztf-backend/services/order/pkg/convert"
 	"ztf-backend/services/promotion/internal/auth"
 	"ztf-backend/services/promotion/internal/entity"
 	"ztf-backend/services/promotion/internal/transport/validation"
@@ -35,8 +36,8 @@ func (hdl *PromotionHandler) GetAllPromotions(ctx *gin.Context) {
 }
 
 func (hdl *PromotionHandler) GetPromotionById(ctx *gin.Context) {
-	stringId := ctx.Param("id")
-	promotion, err := hdl.promotionBusiness.GetPromotion(ctx, stringId)
+	promoId := convert.MustConvStrToInt(ctx.Param("id"))
+	promotion, err := hdl.promotionBusiness.GetPromotion(ctx, promoId)
 	if errors.Is(err, errs.ErrorNotFound) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -90,7 +91,7 @@ func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 }
 
 func (hdl *PromotionHandler) UpdatePromotion(ctx *gin.Context) {
-	stringID := ctx.Param("id")
+	promoId := convert.MustConvStrToInt(ctx.Param("id"))
 	var promotion entity.UpdatePromotionInput
 	if err := ctx.ShouldBindJSON(&promotion); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -103,7 +104,7 @@ func (hdl *PromotionHandler) UpdatePromotion(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.promotionBusiness.UpdatePromotion(ctx, stringID, &promotion)
+	id, err := hdl.promotionBusiness.UpdatePromotion(ctx, promoId, &promotion)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -112,8 +113,8 @@ func (hdl *PromotionHandler) UpdatePromotion(ctx *gin.Context) {
 }
 
 func (hdl *PromotionHandler) DeletePromotion(ctx *gin.Context) {
-	stringId := ctx.Param("id")
-	id, err := hdl.promotionBusiness.DeletePromotion(ctx, stringId)
+	promoId := convert.MustConvStrToInt(ctx.Param("id"))
+	id, err := hdl.promotionBusiness.DeletePromotion(ctx, promoId)
 	if errors.Is(err, errs.ErrorNotFound) {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -131,7 +132,7 @@ func (hdl *PromotionHandler) VerifyPromotion(ctx *gin.Context) {
 		return
 	}
 
-	req.UserId = ctx.GetHeader("X-User-Id")
+	req.UserId = convert.MustConvStrToInt(ctx.GetHeader("X-User-Id"))
 	valid, err := hdl.promotionBusiness.VerifyPromotion(ctx, req)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -141,8 +142,9 @@ func (hdl *PromotionHandler) VerifyPromotion(ctx *gin.Context) {
 }
 
 func (hdl *PromotionHandler) CollectPromotion(ctx *gin.Context) {
-	reqCtx := auth.SetAuthKey(ctx, ctx.GetHeader("X-User-Id"))
-	promotionId := ctx.Param("id")
+	userId := convert.MustConvStrToInt(ctx.GetHeader("X-User-Id"))
+	reqCtx := auth.SetAuthKey(ctx, userId)
+	promotionId := convert.MustConvStrToInt(ctx.Param("id"))
 
 	collected, err := hdl.promotionBusiness.CollectPromotion(reqCtx, promotionId)
 	if err != nil {

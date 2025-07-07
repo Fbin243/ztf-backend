@@ -5,9 +5,9 @@ package promotion;
 option go_package = "ztf-backend/proto/pb/promotion";
 
 message ApplyPromotionRequest {
-  string promotion_id = 1;
-  string user_id = 2;
-  string order_id = 3;
+  int64 promotion_id = 1;
+  int64 user_id = 2;
+  int64 order_id = 3;
   int64 amount = 4;
   int64 promotion_amount = 5;
 }

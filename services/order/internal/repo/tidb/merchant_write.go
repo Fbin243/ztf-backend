@@ -3,21 +3,20 @@ package tidb
 import (
 	"context"
 	"ztf-backend/services/order/internal/entity"
-
-	"github.com/google/uuid"
+	"ztf-backend/services/order/pkg/idgen"
 )
 
 func (r *MerchantRepo) InsertMany(
 	ctx context.Context,
 	merchants []entity.Merchant,
-) ([]string, error) {
+) ([]int64, error) {
 	if len(merchants) == 0 {
 		return nil, nil
 	}
 
 	for i := range merchants {
-		if merchants[i].Id == "" {
-			merchants[i].Id = uuid.New().String()
+		if merchants[i].Id == 0 {
+			merchants[i].Id = idgen.GenerateID()
 		}
 	}
 
@@ -25,7 +24,7 @@ func (r *MerchantRepo) InsertMany(
 		return nil, err
 	}
 
-	ids := make([]string, len(merchants))
+	ids := make([]int64, len(merchants))
 	for i, merchant := range merchants {
 		ids[i] = merchant.Id
 	}

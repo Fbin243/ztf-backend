@@ -6,6 +6,7 @@ import (
 	"ztf-backend/services/order/internal/entity"
 	"ztf-backend/services/order/internal/transport/dto"
 	"ztf-backend/services/order/internal/transport/validation"
+	"ztf-backend/services/order/pkg/convert"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
@@ -42,8 +43,8 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 	}
 
 	// Find merchant and user info of each order
-	userIDs := []string{}
-	merchantIDs := []string{}
+	userIDs := []int64{}
+	merchantIDs := []int64{}
 	for _, order := range orders {
 		if order.UserId != nil {
 			userIDs = append(userIDs, *order.UserId)
@@ -57,7 +58,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 		return
 	}
 
-	merchantMap := map[string]entity.Merchant{}
+	merchantMap := map[int64]entity.Merchant{}
 	for _, merchant := range merchants {
 		merchantMap[merchant.Id] = merchant
 	}
@@ -68,7 +69,7 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 		return
 	}
 
-	userMap := map[string]entity.User{}
+	userMap := map[int64]entity.User{}
 	for _, user := range users {
 		userMap[user.Id] = user
 	}
@@ -103,8 +104,13 @@ func (hdl *OrderHandler) GetAllOrders(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) GetOrderById(ctx *gin.Context) {
-	stringId := ctx.Param("id")
-	order, err := hdl.orderBusiness.GetOrderWithMerchantAndUser(ctx, stringId)
+	id := convert.MustConvStrToInt(ctx.Param("id"))
+	if id == 0 {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "invalid id"})
+		return
+	}
+
+	order, err := hdl.orderBusiness.GetOrderWithMerchantAndUser(ctx, id)
 	if err == errs.ErrorNotFound {
 		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -146,7 +152,12 @@ func (hdl *OrderHandler) CreateOrder(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
-	stringId := ctx.Param("id")
+	orderId := convert.MustConvStrToInt(ctx.Param("id"))
+	if orderId == 0 {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "invalid id"})
+		return
+	}
+
 	var order entity.UpdateOrderInput
 	if err := ctx.ShouldBindJSON(&order); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -159,7 +170,7 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.UpdateOrder(ctx, stringId, &order)
+	id, err := hdl.orderBusiness.UpdateOrder(ctx, orderId, &order)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -169,8 +180,13 @@ func (hdl *OrderHandler) UpdateOrder(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
-	stringId := ctx.Param("id")
-	id, err := hdl.orderBusiness.DeleteOrder(ctx, stringId)
+	orderId := convert.MustConvStrToInt(ctx.Param("id"))
+	if orderId == 0 {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "invalid id"})
+		return
+	}
+
+	id, err := hdl.orderBusiness.DeleteOrder(ctx, orderId)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -180,8 +196,15 @@ func (hdl *OrderHandler) DeleteOrder(ctx *gin.Context) {
 }
 
 func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
-	reqCtx := auth.SetAuthKey(ctx, ctx.GetHeader("X-User-Id"))
-	stringId := ctx.Param("id")
+	userId := convert.MustConvStrToInt(ctx.GetHeader("X-User-Id"))
+	orderId := convert.MustConvStrToInt(ctx.Param("id"))
+	if userId == 0 || orderId == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid id"})
+		return
+	}
+
+	reqCtx := auth.SetAuthKey(ctx, userId)
+
 	var input entity.PayOrderInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -194,7 +217,7 @@ func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
 		return
 	}
 
-	id, err := hdl.orderBusiness.PayForOrder(reqCtx, stringId, &input)
+	id, err := hdl.orderBusiness.PayForOrder(reqCtx, orderId, &input)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

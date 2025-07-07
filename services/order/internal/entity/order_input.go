@@ -1,7 +1,7 @@
 package entity
 
 type CreateOrderInput struct {
-	MerchantId string `json:"merchant_id" validate:"required"`
+	MerchantId int64  `json:"merchant_id" validate:"required"`
 	Amount     int64  `json:"amount"      validate:"required"`
 	Info       string `json:"info"`
 }
@@ -12,8 +12,8 @@ type UpdateOrderInput struct {
 }
 
 type PayOrderInput struct {
-	PromotionId     *string `json:"promotion_id"     validate:"omitempty,uuid"`
-	Amount          int64   `json:"amount"           validate:"min=0"`
-	PromotionAmount int64   `json:"promotion_amount" validate:"min=0"`
-	PayAmount       int64   `json:"pay_amount"       validate:"min=0"`
+	PromotionId     *int64 `json:"promotion_id"     validate:"omitempty,uuid"`
+	Amount          int64  `json:"amount"           validate:"min=0"`
+	PromotionAmount int64  `json:"promotion_amount" validate:"min=0"`
+	PayAmount       int64  `json:"pay_amount"       validate:"min=0"`
 }
