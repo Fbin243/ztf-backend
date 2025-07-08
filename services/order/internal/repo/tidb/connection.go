@@ -58,7 +58,7 @@ func init() {
 	_, err = sqlDB.Exec(`
 		CREATE TABLE
 		IF NOT EXISTS ztf_db.users (
-			id CHAR(36) PRIMARY KEY,
+			id BIGINT PRIMARY KEY,
 			username VARCHAR(255) NOT NULL UNIQUE,
 			email VARCHAR(255) NOT NULL UNIQUE,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -73,7 +73,7 @@ func init() {
 	_, err = sqlDB.Exec(`
 		CREATE TABLE
 		IF NOT EXISTS ztf_db.merchants (
-			id CHAR(36) PRIMARY KEY,
+			id BIGINT PRIMARY KEY,
 			username VARCHAR(255) NOT NULL UNIQUE,
 			email VARCHAR(255) NOT NULL UNIQUE,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -2,10 +2,12 @@ package composer
 
 import (
 	"log"
+	"log/slog"
 	"os"
 	"ztf-backend/proto/pb/promotion"
 	"ztf-backend/services/order/internal/repo/rpc"
 
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -21,10 +23,13 @@ func ComposePromotionClient() (*rpc.PromotionClient, *grpc.ClientConn) {
 		host = "localhost"
 	}
 
-	log.Printf("Connecting to Promotion gRPC service at %s:%s", host, port)
+	slog.Info("Connecting to Promotion gRPC service", "host", host, "port", port)
 
-	opts := grpc.WithTransportCredentials(insecure.NewCredentials())
-	conn, err := grpc.NewClient(host+":"+port, opts)
+	conn, err := grpc.NewClient(
+		host+":"+port,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+	)
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

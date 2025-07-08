@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
@@ -25,8 +26,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Register /metrics before middleware to avoid couting the request from prometheus to /metrics
 	r.GET("/metrics", middleware.PrometheusHandler())
 	r.Use(middleware.RequestMetricsMiddleware())
+	r.Use(otelgin.Middleware("order-service"))
+	r.Use(middleware.ErrorHandler())
 
-	r.Use(middleware.AuthMiddleware())
+	r.Use(middleware.AuthHandler())
 
 	// order routes
 	r.GET("/api/v1/orders", s.orderHdl.GetAllOrders)

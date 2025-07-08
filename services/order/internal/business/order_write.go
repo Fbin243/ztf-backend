@@ -108,7 +108,7 @@ func (b *OrderBusiness) PayForOrder(
 	// Acquire a lock
 	locker := locker.NewLocker(
 		"order:pay:"+convert.ConvIntToStr(id),
-		60*time.Second,
+		10*time.Second,
 		3,
 		500*time.Millisecond,
 	)

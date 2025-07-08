@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware() gin.HandlerFunc {
+func AuthHandler() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		userID := ctx.GetHeader("X-User-Id")
 		if userID == "" {

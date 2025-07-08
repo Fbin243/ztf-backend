@@ -15,6 +15,7 @@ import (
 	"ztf-backend/services/promotion/internal/server"
 	"ztf-backend/services/promotion/internal/transport/rpc"
 
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 )
 
@@ -65,7 +66,7 @@ func main() {
 }
 
 func startRPCServer() {
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	composer := composer.GetComposer()
 	promotion.RegisterPromotionServiceServer(s, rpc.NewPromotionHandler(composer.PromotionBusiness))
 

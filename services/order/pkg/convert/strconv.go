@@ -1,14 +1,14 @@
 package convert
 
 import (
-	"log"
+	"log/slog"
 	"strconv"
 )
 
 func MustConvStrToInt(idStr string) int64 {
 	id, err := strconv.ParseInt(idStr, 0, 64)
 	if err != nil {
-		log.Printf("Error convert %v to int64", idStr)
+		slog.Error("Error convert string to int64", "string", idStr)
 		return 0
 	}
 

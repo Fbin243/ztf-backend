@@ -203,7 +203,7 @@ func (hdl *OrderHandler) PayForOrder(ctx *gin.Context) {
 		return
 	}
 
-	reqCtx := auth.SetAuthKey(ctx, userId)
+	reqCtx := auth.SetAuthKey(ctx.Request.Context(), userId)
 
 	var input entity.PayOrderInput
 	if err := ctx.ShouldBindJSON(&input); err != nil {

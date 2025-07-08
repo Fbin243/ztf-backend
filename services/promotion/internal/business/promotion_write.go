@@ -95,7 +95,7 @@ func (b *PromotionBusiness) CollectPromotion(
 	// Acquire a lock
 	locker := locker.NewLocker(
 		"promotion:collect:"+convert.ConvIntToStr(promotionId),
-		60*time.Second,
+		10*time.Second,
 		3,
 		500*time.Millisecond,
 	)

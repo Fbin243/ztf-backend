@@ -1,7 +1,7 @@
 package tidb
 
 import (
-	"log"
+	"log/slog"
 	"ztf-backend/services/order/internal/entity"
 
 	biz "ztf-backend/services/order/internal/business"
@@ -16,7 +16,7 @@ type OrderRepo struct {
 func NewOrderRepo(db *gorm.DB) *OrderRepo {
 	err := db.AutoMigrate(&entity.Order{})
 	if err != nil {
-		log.Printf("Error migrating order table: %v", err)
+		slog.Error(err.Error())
 	}
 
 	return &OrderRepo{db}

@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"time"
+	"ztf-backend/services/order/pkg/observability"
 	"ztf-backend/services/promotion/internal/composer"
 	"ztf-backend/services/promotion/internal/transport/rest"
 
@@ -30,8 +31,12 @@ func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PROMOTION_PORT"))
 	log.Printf("Starting server on port %d", port)
 
-	composer := composer.GetComposer()
+	err = observability.Init("promotion-service")
+	if err != nil {
+		log.Fatalf("Failed to init observability: %v", err)
+	}
 
+	composer := composer.GetComposer()
 	NewServer := &Server{
 		port:         port,
 		promotionHdl: rest.NewPromotionHandler(composer.PromotionBusiness),

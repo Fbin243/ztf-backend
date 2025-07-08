@@ -9,6 +9,7 @@ import (
 	"time"
 	"ztf-backend/services/order/internal/composer"
 	"ztf-backend/services/order/internal/transport/rest"
+	"ztf-backend/services/order/pkg/observability"
 
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
@@ -29,6 +30,11 @@ func NewServer() *http.Server {
 
 	port, _ := strconv.Atoi(os.Getenv("ORDER_PORT"))
 	log.Printf("Starting server on port %d", port)
+
+	err = observability.Init("order-service")
+	if err != nil {
+		log.Fatalf("Failed to init observability: %v", err)
+	}
 
 	composer := composer.GetComposer()
 	NewServer := &Server{

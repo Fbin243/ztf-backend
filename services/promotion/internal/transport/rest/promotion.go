@@ -64,6 +64,7 @@ func (hdl *PromotionHandler) GetPromotionByCode(ctx *gin.Context) {
 func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 	var promotion entity.CreatePromotionInput
 	if err := ctx.ShouldBindJSON(&promotion); err != nil {
+		_ = ctx.Error(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -71,18 +72,21 @@ func (hdl *PromotionHandler) CreatePromotion(ctx *gin.Context) {
 	// Validate the promotion data
 	err := validation.GetValidator().Struct(promotion)
 	if err != nil {
+		_ = ctx.Error(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	id, err := hdl.promotionBusiness.CreatePromotion(ctx, &promotion)
 	if err != nil {
+		_ = ctx.Error(err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	if promotion.PromotionType == entity.PromotionTypePercentage &&
 		promotion.Value > 100 {
+		_ = ctx.Error(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Value must be less than or equal to 100%"})
 		return
 	}
